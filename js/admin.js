@@ -156,7 +156,9 @@
 
   // ---------- Website content ----------
   // Long text boxes grow to show everything in them, so nothing has to be scrolled inside a small box.
-  function grow(t) { t.style.height = 'auto'; t.style.height = Math.max(120, t.scrollHeight + 4) + 'px'; }
+  function grow(t) { t.style.height = 'auto'; t.style.height = (t.scrollHeight + 2) + 'px'; }
+  // Stray spaces at the ends of lines and blank lines at the end are dropped, on the way in and on the way out.
+  function tidy(v) { return String(v).replace(/[ \t\u00a0]+$/gm, '').replace(/\n{3,}/g, '\n\n').trim(); }
   var built = false;
   function buildContent() {
     if (built) return;
@@ -173,7 +175,7 @@
         var body = el('div', 'adm-group-body');
         var inputs = [];
         groups[name].forEach(function (f) {
-          var start = saved[f.key] != null ? saved[f.key] : f.value;
+          var start = tidy(saved[f.key] != null ? saved[f.key] : f.value);
           var wrap = el('div', 'field');
           var id = 'f-' + f.key.replace(/\W/g, '-');
           var label = el('label', '', f.label);
@@ -203,7 +205,7 @@
             input = el(f.type === 'long' ? 'textarea' : 'input');
             input.id = id;
             input.value = start;
-            if (f.type === 'long') { input.rows = 4; input.addEventListener('input', function () { grow(input); }); }
+            if (f.type === 'long') { input.rows = 1; input.addEventListener('input', function () { grow(input); }); }
             var item = { f: f, input: input, wrap: wrap, start: start };
             input.addEventListener('input', function () { wrap.classList.toggle('is-changed', input.value !== item.start); });
             wrap.appendChild(input);
@@ -244,7 +246,7 @@
           it.start = url; it.input.value = ''; it.wrap.classList.remove('is-changed');
         }));
       } else if (it.input.value !== it.start) {
-        var v = it.input.value.trim();
+        var v = tidy(it.input.value);
         if (!v) return; // blank means "leave as it is"; the site keeps its built-in wording
         rows.push({ key: it.f.key, value: v });
         it.pending = v;
@@ -257,7 +259,7 @@
       return sb.from('web_content').upsert(rows);
     }).then(function (r) {
       if (r.error) throw r.error;
-      inputs.forEach(function (it) { if (it.pending != null) { it.start = it.pending; it.pending = null; it.wrap.classList.remove('is-changed'); } });
+      inputs.forEach(function (it) { if (it.pending != null) { it.start = it.pending; it.input.value = it.pending; if (it.input.tagName === 'TEXTAREA') grow(it.input); it.pending = null; it.wrap.classList.remove('is-changed'); } });
       try { localStorage.removeItem('hbc-content'); } catch (err) { /* nothing kept */ }
       said.textContent = r.none ? 'Nothing to save.' : 'Saved. The website is updated.';
     }).catch(function (err) {
