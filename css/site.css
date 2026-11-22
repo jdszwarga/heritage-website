@@ -6,7 +6,8 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: clip; scrollbar-gutter: stable; }
-body { background-image: none; min-height: 100svh; overflow-x: clip; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+/* Fine grain sits in the page background itself. A see-through layer over the whole screen made scrolling and the video laggy on high-resolution displays. */
+body { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E"); background-size: 220px; min-height: 100svh; overflow-x: clip; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
 img, video { max-width: 100%; }
 h1, h2, h3, p { margin: 0; }
 address, cite { font-style: normal; }
@@ -102,7 +103,6 @@ html:not(.nav-open) .has-hero .site-header:not(.is-scrolled) { background: trans
 .hero-media { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
 .hero-media { background: #262426 url("../assets/video/hero-poster.jpg") center / cover no-repeat; }
 .hero-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.hero-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(38, 36, 38, .5), rgba(38, 36, 38, .62) 55%, rgba(38, 36, 38, .82)); }
 .hero-inner { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; gap: var(--space-8); width: 100%; max-width: 900px; }
 .hero .hb-headline .hb-lg { font-size: clamp(40px, 13.2vw, 148px); }
 .hero .hb-headline .hb-sm { font-size: clamp(22px, 5vw, 44px); }
@@ -247,8 +247,8 @@ button.sched-row:focus-visible { outline: 2px solid var(--focus); outline-offset
 .sundays .times { color: var(--text-strong); }
 .sundays .sched-row b { color: var(--text-muted); }
 
-/* Grain: fine film grain over the whole page, heavier static on the dark photo sections only */
-.hb-static { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") repeat; background-size: 220px; opacity: .16; }
+/* Grain: heavier static on the dark photo sections only (the light grain is in the body background) */
+.hb-static { display: none; }
 .hero::after, .sundays::after, .more::after { content: ""; position: absolute; inset: 0; z-index: 1; background: var(--tex-static) repeat; background-size: 200px; opacity: var(--static-opacity); pointer-events: none; }
 
 /* Pop-ups: compact enough to fit the screen without scrolling */
