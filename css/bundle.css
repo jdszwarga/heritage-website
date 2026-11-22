@@ -1,0 +1,112 @@
+/* Heritage Baptist Church — house patterns. Needs tokens.css (custom properties) loaded first.
+   Point these at your own copies of the files in assets/ when you build the site. */
+:root {
+  --tex-paper: url("../assets/textures/paper-tile.jpg");   /* assets/Textures/paper-tile.jpg */
+  --tex-ink: url("../assets/textures/ink-tile.jpg");     /* assets/Textures/ink-tile.jpg */
+  --tex-static: url("../assets/textures/static-tile.png");  /* assets/Textures/static-tile.png */
+  --tex-leather: url("../assets/textures/worn-leather.jpg"); /* assets/Textures/worn-leather.jpg */
+}
+
+/* Ground: paper texture under everything */
+body, .hb-ground {
+  margin: 0;
+  background: var(--surface) var(--tex-paper) repeat;
+  background-size: 512px;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 28px;
+}
+[data-theme="ink"] body, [data-theme="ink"] .hb-ground, .hb-ground[data-theme="ink"] { background-image: var(--tex-ink); }
+
+/* TV static: one fixed layer over the whole page (also over photos and type) */
+.hb-static {
+  position: fixed; inset: 0; z-index: 50; pointer-events: none;
+  background: var(--tex-static) repeat; background-size: 200px;
+  opacity: var(--static-opacity, 0.9);
+}
+
+/* Headline: Bungee capitals filled with worn leather (paper theme) */
+.hb-headline { margin: 0; font-family: var(--font-display); font-weight: 400; line-height: .95; text-align: center; text-transform: uppercase; }
+.hb-headline span { display: block; }
+.hb-headline .hb-lg { font-size: clamp(52px, 10vw, 112px); }
+.hb-headline .hb-md { font-size: clamp(36px, 6.6vw, 72px); }
+.hb-headline .hb-sm { font-size: clamp(22px, 3.6vw, 40px); margin: .12em 0; }
+.hb-headline, .hb-leather {
+  color: var(--text);
+  background: var(--tex-leather) center / 120% auto;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+[data-theme="ink"] .hb-headline, [data-theme="ink"] .hb-leather { background: none; -webkit-text-fill-color: currentColor; }
+
+/* Script word: one per page, maroon, rotated, laid over photos */
+.hb-script {
+  font-family: var(--font-script); font-weight: 400; color: var(--maroon);
+  font-size: clamp(96px, 24vw, 230px); line-height: 1;
+  -webkit-text-stroke: 1px currentColor; letter-spacing: .02em;
+  transform: rotate(-6deg); pointer-events: none; white-space: nowrap;
+}
+
+/* Photo strip: square-cornered 3:2 frames, greyscale, small gaps */
+.hb-strip { display: grid; grid-template-columns: 1.3fr 1fr 1fr; grid-auto-rows: clamp(150px, 24vw, 260px); gap: var(--space-2); }
+.hb-frame { position: relative; height: 100%; overflow: hidden; background: var(--photo-ground); }
+.hb-frame > img { width: 100%; height: 100%; object-fit: cover; object-position: var(--focus-x, 50%) var(--focus-y, 50%); transform: scale(var(--zoom, 1)); transform-origin: var(--focus-x, 50%) var(--focus-y, 50%); display: block; filter: grayscale(1); }
+.hb-frame.hb-cutout > img { object-fit: contain; object-position: center bottom; transform: none; }
+/* Break the frame: the photo and its matching cut-out share one geometry (--pop-w/x/y);
+   the frame clips the photo, the cut-out layer only clips its top and sides, so it hangs below. */
+.hb-pop { position: relative; z-index: 2; }
+.hb-pop .hb-pop-img { position: absolute; max-width: none; height: auto; width: var(--pop-w, 190%); left: var(--pop-x, -88%); top: var(--pop-y, -14%); filter: grayscale(1); }
+.hb-pop > .hb-pop-out { position: absolute; inset: 0; pointer-events: none; clip-path: inset(0 0 -100% 0); }
+
+/* Hero: headline, strip, script word across it, open Bible overlapping the bottom */
+.hb-hero { position: relative; max-width: var(--content-max); margin: 0 auto; padding: var(--space-12) var(--space-4) 0; }
+.hb-hero .hb-strip { margin-top: var(--space-6); }
+.hb-hero .hb-script { position: absolute; left: 2%; top: 30%; z-index: 3; }
+.hb-hero .hb-bible { display: block; width: min(52%, 560px); margin: -7% 0 0 14%; position: relative; z-index: 1; }
+
+/* Service row: condensed maroon words beside stacked labels */
+.hb-service { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-6) var(--space-12); }
+.hb-service-item { display: flex; align-items: center; gap: var(--space-3); }
+.hb-service-big { font-family: var(--font-condensed); color: var(--maroon); font-size: 72px; line-height: .9; text-transform: uppercase; }
+.hb-service-label { font-weight: 700; font-size: 15px; line-height: 20px; text-transform: uppercase; color: var(--text); }
+
+/* Points: Bungee heading + KJV verse */
+.hb-points { display: grid; gap: var(--space-8); max-width: var(--measure); }
+.hb-point h3 { margin: 0 0 var(--space-2); font-family: var(--font-display); font-weight: 400; font-size: 22px; line-height: 1.2; text-transform: uppercase; color: var(--text); }
+.hb-scripture { margin: 0; font-style: italic; font-weight: 600; font-size: 18px; line-height: 30px; color: var(--text); }
+.hb-scripture em, .hb-scripture mark { font-style: inherit; background: none; color: var(--maroon); }
+.hb-scripture cite { font-style: normal; font-weight: 600; color: var(--text); white-space: nowrap; }
+
+/* Numbered steps (handout) */
+.hb-step { display: grid; grid-template-columns: 64px 1fr; gap: var(--space-6); align-items: start; max-width: var(--measure); }
+.hb-step-num { font-family: var(--font-condensed); color: var(--maroon); font-size: 112px; line-height: .78; text-align: center; }
+.hb-step h3 { margin: 0 0 var(--space-1); font-family: var(--font-display); font-weight: 400; font-size: 22px; line-height: 1.2; text-transform: uppercase; }
+.hb-step p { margin: 0 0 var(--space-2); }
+.hb-step .hb-ref { color: var(--maroon); font-style: italic; font-weight: 600; }
+
+/* Button */
+.hb-button {
+  display: inline-flex; align-items: center; height: 48px; padding: 0 var(--space-6);
+  font-family: var(--font-sans); font-weight: 700; font-size: 15px; letter-spacing: .02em; text-transform: uppercase; text-decoration: none;
+  background: var(--maroon-fill); color: var(--on-maroon); border: 2px solid var(--maroon-fill); border-radius: var(--radius-sm); cursor: pointer;
+}
+.hb-button:hover { background: var(--maroon-deep); border-color: var(--maroon-deep); }
+.hb-button.hb-quiet { background: transparent; color: var(--text); border-color: var(--text-muted); }
+.hb-button.hb-quiet:hover { border-color: var(--text); }
+.hb-button:focus-visible, a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+a { color: var(--maroon); text-underline-offset: 3px; }
+
+/* Footer (use with data-theme="ink") */
+.hb-footer { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-8) var(--space-4); justify-content: center; }
+.hb-footer img { height: 64px; width: auto; }
+.hb-footer p { margin: 0; font-weight: 700; font-size: 15px; line-height: 22px; text-transform: uppercase; color: var(--text); }
+
+@media (max-width: 640px) {
+  .hb-strip { grid-template-columns: 1fr 1fr; }
+  .hb-strip > :nth-child(2) { display: none; }
+  .hb-service-big { font-size: 56px; }
+  .hb-step { grid-template-columns: 44px 1fr; gap: var(--space-4); }
+  .hb-step-num { font-size: 80px; }
+}

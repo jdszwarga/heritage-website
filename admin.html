@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en-NZ" data-theme="paper">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Website admin | Heritage Baptist Church</title>
+<link rel="icon" type="image/svg+xml" href="assets/logos/heritage-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/bundle.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin">
+
+<header class="adm-bar">
+  <div class="adm-wrap adm-bar-row">
+    <a href="index.html" class="adm-brand"><img src="assets/logos/heritage-lockup-paper.svg" alt="Heritage Baptist Church" width="2198" height="571"></a>
+    <span class="adm-bar-title">Website admin</span>
+    <button class="adm-link" type="button" id="sign-out" hidden>Sign out</button>
+  </div>
+</header>
+
+<main class="adm-wrap adm-main">
+
+  <!-- Sign in -->
+  <section id="view-signin" class="adm-card adm-signin" hidden>
+    <h1 class="adm-h1">Sign in</h1>
+    <p class="adm-muted">Use your church app account. Only admins can open this page.</p>
+    <form id="signin-form" class="form">
+      <div class="field"><label for="si-email">Email</label><input id="si-email" type="email" autocomplete="username" required></div>
+      <div class="field"><label for="si-pass">Password</label><input id="si-pass" type="password" autocomplete="current-password"></div>
+      <div class="adm-row">
+        <button class="hb-button" type="submit">Sign in</button>
+        <button class="adm-link" type="button" id="si-link">Email me a sign-in link instead</button>
+      </div>
+      <p class="small form-note" id="si-note" role="status"></p>
+    </form>
+  </section>
+
+  <section id="view-denied" class="adm-card" hidden>
+    <h1 class="adm-h1">No access</h1>
+    <p>This account is signed in but is not an admin in the church app. Ask an admin to give it the admin role, then sign in again.</p>
+  </section>
+
+  <!-- Signed in -->
+  <section id="view-app" hidden>
+    <div class="adm-tabs" role="tablist">
+      <button type="button" role="tab" class="adm-tab is-on" data-tab="people" aria-selected="true">People <span class="adm-count" id="count-new"></span></button>
+      <button type="button" role="tab" class="adm-tab" data-tab="content" aria-selected="false">Website content</button>
+    </div>
+
+    <div id="tab-people">
+      <div class="adm-filters">
+        <div class="adm-chips" id="filter-kind">
+          <button type="button" class="adm-chip is-on" data-kind="">All</button>
+          <button type="button" class="adm-chip" data-kind="study">Bible study</button>
+          <button type="button" class="adm-chip" data-kind="visit">Visits</button>
+          <button type="button" class="adm-chip" data-kind="message">Messages</button>
+        </div>
+        <div class="adm-chips" id="filter-status">
+          <button type="button" class="adm-chip is-on" data-status="open">To do</button>
+          <button type="button" class="adm-chip" data-status="done">Done</button>
+          <button type="button" class="adm-chip" data-status="">Everything</button>
+        </div>
+      </div>
+      <p class="adm-muted" id="people-note" role="status">Loading…</p>
+      <div id="people-list" class="adm-list"></div>
+    </div>
+
+    <div id="tab-content" hidden>
+      <p class="adm-muted">Change the wording or a photo, then press Save in that section. The website updates straight away.</p>
+      <div id="content-groups"></div>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/content-fields.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

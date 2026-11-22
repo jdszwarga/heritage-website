@@ -1,0 +1,48 @@
+/* Heritage Baptist Church: tokens, written from the design system's tokens.json */
+@font-face { font-family: "Bungee"; src: url("../fonts/Bungee-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "League Gothic"; src: url("../fonts/LeagueGothic-Variable.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Sacramento"; src: url("../fonts/Sacramento-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Montserrat"; src: url("../fonts/Montserrat-Variable.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Montserrat"; src: url("../fonts/Montserrat-Italic-Variable.woff2") format("woff2"); font-weight: 100 900; font-style: italic; font-display: swap; }
+
+:root, [data-theme="paper"] {
+  --surface: #e7e7e4;
+  --surface-raised: #f2f2ef;
+  --text: #3a383a;
+  --text-strong: #262426;
+  --text-muted: #5a575a;
+  --maroon: #9e1543;
+  --maroon-fill: #9e1543;
+  --maroon-deep: #7f0022;
+  --on-maroon: #f4f2ef;
+  --rule: #b4b4b4;
+  --photo-ground: #9a9899;
+  --focus: #9e1543;
+}
+[data-theme="ink"] {
+  --surface: #262426;
+  --surface-raised: #323032;
+  --text: #ecebe7;
+  --text-strong: #f6f5f2;
+  --text-muted: #b9b6b6;
+  --maroon: #e8829f;
+  --rule: #5a575a;
+  --photo-ground: #4a484a;
+  --focus: #e8829f;
+}
+:root {
+  --font-display: Bungee, "Arial Black", Impact, sans-serif;
+  --font-condensed: "League Gothic", "Oswald", Impact, sans-serif;
+  --font-script: Sacramento, "Segoe Script", cursive;
+  --font-sans: Montserrat, system-ui, "Segoe UI", sans-serif;
+  /* Site addition (not in the design system yet): a book serif for section headlines and scripture */
+  --font-serif: Newsreader, "Iowan Old Style", Georgia, "Times New Roman", serif;
+
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px;
+  --space-8: 32px; --space-12: 48px; --space-16: 64px; --space-24: 96px;
+  --radius-none: 0; --radius-sm: 2px; --radius-round: 50%;
+  --shadow-cutout: 0 18px 28px -14px rgba(20, 18, 20, 0.5);
+  --content-max: 1120px;
+  --measure: 68ch;
+  --static-opacity: 0.9;
+}
