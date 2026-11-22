@@ -3,7 +3,7 @@
 :root {
   --tex-paper: url("../assets/textures/paper-tile.jpg");   /* assets/Textures/paper-tile.jpg */
   --tex-ink: url("../assets/textures/ink-tile.jpg");     /* assets/Textures/ink-tile.jpg */
-  --tex-static: url("../assets/textures/static-tile.png");  /* assets/Textures/static-tile.png */
+  --tex-static: url("../assets/textures/static-tile.webp");  /* assets/Textures/static-tile.png */
   --tex-leather: url("../assets/textures/worn-leather.jpg"); /* assets/Textures/worn-leather.jpg */
 }
 

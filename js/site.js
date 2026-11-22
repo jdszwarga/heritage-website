@@ -80,8 +80,12 @@
     vbtn.setAttribute('aria-label', p ? 'Play background video' : 'Pause background video');
   }
   if (video) {
-    if (calm) { video.removeAttribute('autoplay'); video.pause(); setPaused(true); }
-    else { var pr = video.play(); if (pr && pr.catch) pr.catch(function () { setPaused(true); }); }
+    if (calm) { setPaused(true); }
+    else if (navigator.connection && navigator.connection.saveData) { setPaused(true); }
+    else {
+      var begin = function () { var pr = video.play(); if (pr && pr.catch) pr.catch(function () { setPaused(true); }); };
+      if (document.readyState === 'complete') begin(); else window.addEventListener('load', begin);
+    }
     if (vbtn) vbtn.addEventListener('click', function () {
       if (video.paused) { video.play(); setPaused(false); } else { video.pause(); setPaused(true); }
     });

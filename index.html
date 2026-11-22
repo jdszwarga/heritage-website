@@ -6,9 +6,8 @@
 <title>Heritage Baptist Church, Matamata</title>
 <meta name="description" content="Know Jesus through the Bible. Heritage Baptist Church meets on Sundays at 10AM and 5PM at the Matamata-Piako Civic and Memorial Centre.">
 <link rel="icon" type="image/svg+xml" href="assets/logos/heritage-mark.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..700&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/Montserrat-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/Bungee-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/bundle.css">
 <link rel="stylesheet" href="css/site.css">
@@ -62,17 +61,17 @@
 
   <section class="hero" data-theme="ink" aria-labelledby="hero-title">
     <div class="hero-media" aria-hidden="true">
-      <video autoplay muted loop playsinline preload="metadata" poster="assets/video/hero-poster.jpg">
+      <video muted loop playsinline preload="none" poster="assets/video/hero-poster.jpg">
         <source src="assets/video/hero.mp4" type="video/mp4">
       </video>
     </div>
     <div class="hero-inner">
       <h1 class="hb-headline" id="hero-title">
         <span class="hb-lg line"><span class="line-in">Searching</span></span>
-        <span class="hb-sm line"><span class="line-in" style="--d:.12s">for</span></span>
-        <span class="hb-lg line"><span class="line-in" style="--d:.2s">Truth?</span></span>
+        <span class="hb-sm line"><span class="line-in" style="--d:.05s">for</span></span>
+        <span class="hb-lg line"><span class="line-in" style="--d:.1s">Truth?</span></span>
       </h1>
-      <div class="actions reveal" style="--d:.7s">
+      <div class="actions reveal" style="--d:.2s">
         <a class="hb-button" href="bible.html#study" data-open-study>Request a Bible study with one of our pastors <span class="arr" aria-hidden="true">&rarr;</span></a>
         <a class="hb-button hb-quiet" href="seat.html" data-open-visit>Plan a visit</a>
       </div>

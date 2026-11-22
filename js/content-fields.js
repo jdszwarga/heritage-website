@@ -161,6 +161,22 @@ window.HBC_FIELDS = [
   "hint": ""
  },
  {
+  "group": "Plan a visit",
+  "key": "visit.thursday",
+  "label": "Thursday line",
+  "type": "text",
+  "value": "Thursday prayer meeting 7pm",
+  "hint": ""
+ },
+ {
+  "group": "Plan a visit",
+  "key": "visit.body",
+  "label": "What a visit is like",
+  "type": "long",
+  "value": "Come to the Matamata-Piako Civic and Memorial Centre a few minutes before 10am. Someone will meet you at the door and show you to a seat.\nAt 10am there is Bible study, with Sunday school for the kids. The service follows at 11am, with hymns and preaching from the Bible. There is a creche for little ones and Bible teaching for children. At 12pm we share lunch, and you are welcome to stay.\nOn Sunday evenings at 5pm we meet again for another service. On Thursdays at 7pm we meet to pray together.",
+  "hint": "One paragraph per line."
+ },
+ {
   "group": "Our story",
   "key": "story.body",
   "label": "Our story",

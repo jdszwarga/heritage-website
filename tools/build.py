@@ -97,8 +97,18 @@ def find(tag, text):
     raise KeyError(text)
 
 
+G = "Plan a visit"
+VISIT_THURSDAY = "Thursday prayer meeting 7pm"
+VISIT_BODY = (
+    "Come to the Matamata-Piako Civic and Memorial Centre a few minutes before 10am. Someone will meet you at the door and show you to a seat.\n"
+    "At 10am there is Bible study, with Sunday school for the kids. The service follows at 11am, with hymns and preaching from the Bible. There is a creche for little ones and Bible teaching for children. At 12pm we share lunch, and you are welcome to stay.\n"
+    "On Sunday evenings at 5pm we meet again for another service. On Thursdays at 7pm we meet to pray together."
+)
+field(G, "visit.thursday", "Thursday line", VISIT_THURSDAY)
+field(G, "visit.body", "What a visit is like", VISIT_BODY, "long", "One paragraph per line.")
+
 G = "Our story"
-story = "\n".join(x for t, x in items[: find("h1", "Our Purpose")] if t == "p" and x.startswith("The "))
+story ="\n".join(x for t, x in items[: find("h1", "Our Purpose")] if t == "p" and x.startswith("The "))
 field(G, "story.body", "Our story", story, "long", "One paragraph per line.")
 field(G, "img.story", "Our story photo", "assets/imagery/group-crop.jpg", "image")
 
@@ -205,10 +215,12 @@ page("church.html", "Our Church", "Plan a visit, our story, our pastors and how 
     <div class="visit-row reveal">
       <div>
         <p class="times">Sundays <span data-c="sundays.times">10am &amp; 5pm</span></p>
+        <p class="visit-thursday" data-c="visit.thursday">""" + E(VISIT_THURSDAY) + """</p>
         <address class="label" style="margin-top:var(--space-4)" data-c-lines="contact.address">Matamata-Piako Civic &amp; Memorial Centre<br>11 Tainui Street, Matamata 3400</address>
       </div>
       <div><a class="hb-button" href="seat.html" data-open-visit>Plan a visit """ + ARR + """</a></div>
     </div>
+    <div class="prose reveal" data-c-paras="visit.body">""" + paras_html(VISIT_BODY) + """</div>
   </div></section>
 
   <section class="block" id="story"><div class="wrap">
