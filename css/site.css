@@ -127,14 +127,15 @@ html:not(.nav-open) .has-hero .site-header:not(.is-scrolled) { background: trans
 /* Church family photo */
 
 /* Sundays: schedule over the church photos */
-.sundays { position: relative; isolation: isolate; overflow: hidden; padding-block: min(46vw, 320px) var(--space-16); background: var(--surface); color: var(--text); --rule: rgba(236, 235, 231, .28); }
+.sundays { position: relative; isolation: isolate; overflow: hidden; padding-block: min(60vw, 420px) var(--space-16); background: var(--surface); color: var(--text); --rule: rgba(236, 235, 231, .28); }
 .sundays-bg { position: absolute; inset: 0; z-index: -1; }
 .sundays-bg img { position: absolute; left: 0; width: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05); }
 /* Phone: the whole family photo runs across the top, so nobody is cut off at the sides */
-.sundays-bg .ph-a { top: 0; height: auto; aspect-ratio: 3 / 2; -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 100%); mask-image: linear-gradient(180deg, #000 60%, transparent 100%); }
-.sundays-bg .ph-b { top: 48vw; height: 820px; }
+.sundays-bg .ph-a { top: 0; height: auto; aspect-ratio: 3 / 2; -webkit-mask-image: linear-gradient(180deg, #000 78%, transparent 100%); mask-image: linear-gradient(180deg, #000 78%, transparent 100%); }
+/* The second photo starts behind the solid part of the first, so its top edge never shows through the fade */
+.sundays-bg .ph-b { top: 40vw; height: 820px; }
 .sundays-bg .ph-a { object-position: 50% 28%; }
-.sundays-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(38, 36, 38, .4), rgba(38, 36, 38, .8) 30%, rgba(38, 36, 38, .8) 78%, rgba(38, 36, 38, .6)); }
+.sundays-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(38, 36, 38, .35), rgba(38, 36, 38, .45) 50vw, rgba(38, 36, 38, .8) 80vw, rgba(38, 36, 38, .8) 78%, rgba(38, 36, 38, .6)); }
 .sundays-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }
 .sundays-title { font-family: var(--font-serif); font-weight: 500; font-size: clamp(72px, 19vw, 168px); line-height: .86; letter-spacing: -0.03em; color: var(--text-strong); }
 .times { margin-top: var(--space-4); font-family: var(--font-condensed); color: var(--maroon); font-size: clamp(52px, 13vw, 96px); line-height: .9; text-transform: uppercase; white-space: nowrap; }
@@ -440,7 +441,7 @@ body:not(.has-hero) .foot-art { -webkit-mask-image: url("../assets/imagery/readi
   .bible { padding-top: 176px; padding-bottom: var(--space-24); }
   .sundays { padding-block: var(--space-24); }
   .sundays-bg .ph-a { top: 0; height: 100%; aspect-ratio: auto; width: max(52%, 700px); -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent 100%); mask-image: linear-gradient(90deg, #000 88%, transparent 100%); }
-  .sundays-bg .ph-b { top: 0; height: 100%; left: 48%; width: 52%; }
+  .sundays-bg .ph-b { top: 0; height: 100%; left: 40%; width: 60%; }
   .sundays-bg::after { background: linear-gradient(90deg, rgba(38, 36, 38, .82), rgba(38, 36, 38, .62) 50%, rgba(38, 36, 38, .8)); }
   .sundays-title { font-size: clamp(88px, 10vw, 132px); }
   .more-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
