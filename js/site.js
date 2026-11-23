@@ -277,6 +277,17 @@
         var text = make('div', 'tl-text', '');
         lines(h.text || '').forEach(function (l) { text.appendChild(make('p', '', l)); });
         body.appendChild(text);
+        // Optional link under the text. Other sites open in a new tab; pages of this site open in place.
+        var to = String(h.link || '').trim();
+        if (/^(https?:\/\/|mailto:|tel:|#|[\w-]+\.html)/i.test(to)) {
+          var a = make('a', 'tl-link', String(h.linkText || '').trim() || 'Learn more');
+          a.href = to;
+          if (/^https?:/i.test(to)) { a.target = '_blank'; a.rel = 'noopener'; }
+          a.appendChild(document.createTextNode(' '));
+          var arr = make('span', 'arr', '\u2192'); arr.setAttribute('aria-hidden', 'true');
+          a.appendChild(arr);
+          body.appendChild(a);
+        }
         li.appendChild(body);
         if (/^(https:\/\/|assets\/)/.test(h.img || '')) {
           var frame = make('div', 'hb-frame tl-photo', '');

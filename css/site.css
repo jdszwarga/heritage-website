@@ -219,6 +219,10 @@ button.sched-row:focus-visible { outline: 2px solid var(--focus); outline-offset
 .tl-when { font-family: var(--font-condensed); font-weight: 400; font-size: clamp(36px, 9vw, 48px); line-height: .9; text-transform: uppercase; color: var(--maroon); }
 .tl-text { margin-top: var(--space-2); max-width: 34em; font-weight: 600; }
 .tl-text p + p { margin-top: var(--space-3); }
+.tl-link { display: inline-block; margin-top: var(--space-3); font-weight: 700; font-size: 15px; line-height: 22px; text-transform: uppercase; letter-spacing: .01em; color: var(--maroon); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px; }
+.tl-link:hover { text-decoration-color: currentColor; }
+.tl-link .arr { display: inline-block; transition: translate .35s cubic-bezier(.2, .7, .2, 1); }
+.tl-link:hover .arr { translate: 5px 0; }
 .tl-photo { aspect-ratio: 3 / 2; height: auto; max-width: 520px; margin-top: var(--space-4); }
 /* Our story: the line runs on past the last entry to an open square, ready for the next one */
 .tl-open { padding-bottom: 9px; }

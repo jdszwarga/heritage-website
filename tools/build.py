@@ -122,7 +122,7 @@ field(G, "img.story", "Our purpose photo", "assets/imagery/group-crop.jpg", "ima
 
 G = "Our story"
 field(G, "story.timeline", "Highlights", "", "timeline",
-      "Oldest first. Each highlight has a date, a line or two of text and, if you like, one photo. The Our story section and its menu links appear once there is at least one highlight.")
+      "Oldest first. Each highlight has a date, a line or two of text and, if you like, a link and one photo. A link with no link text shows as Learn more. The Our story section and its menu links appear once there is at least one highlight.")
 
 G = "Our pastors"
 pastors_html = []

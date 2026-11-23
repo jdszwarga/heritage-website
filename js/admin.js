@@ -270,10 +270,12 @@
     var list = [];
     try { list = JSON.parse(saved || '[]'); } catch (err) { list = []; }
     if (!Array.isArray(list)) list = [];
-    var entries = list.map(function (h) { return { date: h.date || '', text: h.text || '', img: h.img || '', file: null }; });
+    var entries = list.map(function (h) { return { date: h.date || '', text: h.text || '', img: h.img || '', linkText: h.linkText || '', link: h.link || '', file: null }; });
     var box = el('div', 'adm-tl');
     var item = { f: f, timeline: true, wrap: wrap, start: JSON.stringify(entries.map(plain)) };
-    function plain(e) { return { date: tidy(e.date), text: tidy(e.text), img: e.img }; }
+    // A web address typed without https:// gets it added, so the link does not point inside this site by mistake
+    function address(v) { v = tidy(v); return v && !/^(https?:\/\/|mailto:|tel:|#|[\w-]+\.html)/i.test(v) ? 'https://' + v : v; }
+    function plain(e) { return { date: tidy(e.date), text: tidy(e.text), img: e.img, linkText: tidy(e.linkText), link: address(e.link) }; }
     function kept() { return entries.filter(function (e) { return tidy(e.date) || tidy(e.text); }); }
     function touched() {
       var dirty = entries.some(function (e) { return e.file; }) || JSON.stringify(kept().map(plain)) !== item.start;
@@ -295,7 +297,7 @@
         var del = el('button', 'adm-link adm-danger', 'Remove');
         del.type = 'button';
         del.addEventListener('click', function () {
-          if ((e.date || e.text || e.img) && !confirm('Remove this highlight?')) return;
+          if ((e.date || e.text || e.img || e.link) && !confirm('Remove this highlight?')) return;
           entries.splice(i, 1); draw(); touched();
         });
         head.appendChild(del);
@@ -315,6 +317,22 @@
         text.setAttribute('aria-label', 'Highlight ' + (i + 1) + ' text');
         text.addEventListener('input', function () { e.text = text.value; grow(text); touched(); });
         row.appendChild(text);
+
+        var links = el('div', 'adm-tl-link');
+        var linkText = el('input');
+        linkText.placeholder = 'Link text, for example Learn more';
+        linkText.value = e.linkText;
+        linkText.setAttribute('aria-label', 'Highlight ' + (i + 1) + ' link text');
+        linkText.addEventListener('input', function () { e.linkText = linkText.value; touched(); });
+        var link = el('input');
+        link.type = 'url';
+        link.placeholder = 'Link, for example https://www.youtube.com/...';
+        link.value = e.link;
+        link.setAttribute('aria-label', 'Highlight ' + (i + 1) + ' link');
+        link.addEventListener('input', function () { e.link = link.value; touched(); });
+        links.appendChild(linkText);
+        links.appendChild(link);
+        row.appendChild(links);
 
         var photo = el('div', 'adm-photo');
         var img = el('img');
@@ -343,7 +361,7 @@
       var add = el('button', 'adm-chip', 'Add highlight');
       add.type = 'button';
       add.addEventListener('click', function () {
-        entries.push({ date: '', text: '', img: '', file: null });
+        entries.push({ date: '', text: '', img: '', linkText: '', link: '', file: null });
         draw();
         var rows = box.querySelectorAll('.adm-tl-item');
         rows[rows.length - 1].querySelector('input').focus();

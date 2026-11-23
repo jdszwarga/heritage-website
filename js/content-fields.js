@@ -206,7 +206,7 @@ window.HBC_FIELDS = [
   "label": "Highlights",
   "type": "timeline",
   "value": "",
-  "hint": "Oldest first. Each highlight has a date, a line or two of text and, if you like, one photo. The Our story section and its menu links appear once there is at least one highlight."
+  "hint": "Oldest first. Each highlight has a date, a line or two of text and, if you like, a link and one photo. A link with no link text shows as Learn more. The Our story section and its menu links appear once there is at least one highlight."
  },
  {
   "group": "Our pastors",

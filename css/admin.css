@@ -64,6 +64,7 @@ body.admin { background: var(--surface); min-height: 100svh; }
 .adm-tl-item { width: 100%; display: grid; gap: var(--space-2); padding: var(--space-3); border: 1px solid var(--rule); background: var(--surface); }
 .adm-tl-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2) var(--space-4); font-size: 14px; }
 .adm-tl-n { font-weight: 700; margin-right: auto; }
+.adm-tl-link { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-2); }
 .adm-tl-head .adm-link { font-size: 14px; }
 .adm-tl-head .adm-link:disabled { opacity: .35; cursor: default; text-decoration: none; }
 .adm-tl-head .adm-danger { margin-left: 0; }
