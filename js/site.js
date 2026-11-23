@@ -303,6 +303,8 @@
     each('data-c-img', function (el, v) {
       if (!/^(https:\/\/|assets\/)/.test(v)) return;
       el.src = v;
+      // The cut-out in front of the Sundays title only fits the built-in family photo
+      if (el.classList.contains('ph-a') && !/group-crop\.jpg$/.test(v)) { var front = document.querySelector('.sundays-front'); if (front) front.hidden = true; }
       var frame = el.closest('[hidden]'); if (frame) frame.hidden = false;
     });
   }
