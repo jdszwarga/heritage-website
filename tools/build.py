@@ -17,6 +17,7 @@ E = html.escape
 ARR = '<span class="arr" aria-hidden="true">&rarr;</span>'
 HP = '<input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">'
 FIELDS = []
+SITE = "https://www.heritagebc.org.nz/"  # the address the finished site will live at
 
 
 def field(group, key, label, value, kind="text", hint=""):
@@ -24,10 +25,17 @@ def field(group, key, label, value, kind="text", hint=""):
 
 
 def page(fname, title, desc, body, robots=None):
-    t = top.replace("<title>Heritage Baptist Church, Matamata</title>", "<title>%s | Heritage Baptist Church</title>" % title)
-    start = t.index('<meta name="description" content="') + len('<meta name="description" content="')
-    end = t.index('"', start)
-    t = t[:start] + desc + t[end:]
+    full = "%s | Heritage Baptist Church Matamata" % title
+    t = re.sub(r"<title>.*?</title>", lambda m: "<title>%s</title>" % full, top, 1)
+    for tag, value in (('<meta name="description" content="', desc), ('<meta property="og:description" content="', desc),
+                       ('<meta property="og:title" content="', full), ('<link rel="canonical" href="', SITE + fname),
+                       ('<meta property="og:url" content="', SITE + fname)):
+        start = t.index(tag) + len(tag)
+        end = t.index('"', start)
+        t = t[:start] + value + t[end:]
+    # The church's details for search engines live on the home page only
+    a, b = t.index('<script type="application/ld+json">'), t.index("</script>") + len("</script>\n")
+    t = t[:a] + t[b:]
     if robots:
         t = t.replace('<meta name="viewport"', '<meta name="robots" content="%s">\n<meta name="viewport"' % robots, 1)
     t = t.replace('<a class="nav-top" href="%s">' % fname, '<a class="nav-top" href="%s" aria-current="page">' % fname, 1)
@@ -167,6 +175,11 @@ truth_html = "\n".join(truth_html)
 STUDY_NOTE = "Or text Pastor Josh 027 339 4078 or Pastor Lim 021 0295 4744 to get a cuppa or to learn more about God’s gift of forgiveness."
 field(G, "study.note", "Line under the Bible study button", STUDY_NOTE, "long", "Phone numbers become tap-to-text links.")
 
+G = "Free Bible"
+FREE_BIBLE = "Our Bible stands around Matamata hold free King James New Testaments. Take one, or ask and we will post one to you."
+field(G, "freebible.body", "Free Bible paragraph", FREE_BIBLE, "long")
+field(G, "img.freebible", "Photo of the Bible stands", "", "image", "Optional. Shown under the paragraph once a photo is added.")
+
 
 def linkphones_html(text):
     def link(m):
@@ -202,7 +215,7 @@ for n, (title, lines) in enumerate(creed, 1):
 creed_html = "\n".join(creed_html)
 
 # ---------------- pages ----------------
-page("church.html", "Our Church", "Plan a visit, our story, our pastors and how to contact Heritage Baptist Church, Matamata.", """
+page("church.html", "Our Church", "Visit Heritage Baptist Church in Matamata. What a Sunday is like, our story, our pastors and how to contact us.", """
   <h1 class="sr-only">Our Church</h1>
   <nav class="jump" aria-label="On this page"><div class="wrap jump-row">
     <a href="#visit">Plan a visit</a>
@@ -254,11 +267,12 @@ page("church.html", "Our Church", "Plan a visit, our story, our pastors and how 
   </div></section>
 """)
 
-page("bible.html", "The Bible", "Request a Bible study, read God's truth about us, and see what Heritage Baptist Church believes.", """
+page("bible.html", "The Bible", "Get a free Bible in Matamata. Free King James New Testaments from our Bible stands or by post, Bible studies, and what Heritage Baptist Church believes.", """
   <h1 class="sr-only">The Bible</h1>
   <nav class="jump" aria-label="On this page"><div class="wrap jump-row">
     <a href="#truth">God’s truth about us</a>
     <a href="#study">Request a Bible study</a>
+    <a href="#free-bible">Free Bible</a>
     <a href="#believe">What we believe</a>
   </div></nav>
 
@@ -274,6 +288,13 @@ page("bible.html", "The Bible", "Request a Bible study, read God's truth about u
     <div class="reveal"><a class="hb-button" href="church.html#contact" data-open-study>Request a Bible study with one of our pastors """ + ARR + """</a></div>
     <p class="lead reveal" data-c-linkphones="study.note">""" + linkphones_html(STUDY_NOTE) + """</p>
   </div></section>
+
+  <section class="block" id="free-bible"><div class="wrap">
+    <h2 class="sec-title reveal">Free Bible</h2>
+    <p class="lead reveal" data-c="freebible.body">""" + E(FREE_BIBLE) + """</p>
+    <div class="hb-frame free-photo" hidden><img alt="A Bible stand holding free New Testaments" loading="lazy" data-c-img="img.freebible"></div>
+    <div class="reveal"><a class="hb-button" href="church.html#contact" data-open-testament>Request a free Bible """ + ARR + """</a></div>
+  </section>
 
   <section class="block" id="believe"><div class="wrap">
     <h2 class="sec-title reveal">What we believe</h2>
@@ -303,4 +324,9 @@ page("seat.html", "Save a seat", "Tell us you are coming on Sunday and we will s
 io.open(root + "/js/content-fields.js", "w", encoding="utf-8", newline="\n").write(
     "// Written by tools/build.py. The fields the admin page can edit, with the wording each starts with.\nwindow.HBC_FIELDS = "
     + json.dumps(FIELDS, ensure_ascii=False, indent=1) + ";\n")
+# For search engines: the list of pages, and where to find it
+io.open(root + "/sitemap.xml", "w", encoding="utf-8", newline="\n").write(
+    '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    + "".join("  <url><loc>%s%s</loc></url>\n" % (SITE, f) for f in ("", "church.html", "bible.html")) + "</urlset>\n")
+io.open(root + "/robots.txt", "w", encoding="utf-8", newline="\n").write("User-agent: *\nAllow: /\n\nSitemap: %ssitemap.xml\n" % SITE)
 print("built church.html, bible.html, seat.html and js/content-fields.js (%d editable fields)" % len(FIELDS))

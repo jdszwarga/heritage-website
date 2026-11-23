@@ -96,13 +96,27 @@
   if (jumps.length && 'IntersectionObserver' in window) {
     var byId = {};
     jumps.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+    // The row slides sideways: mark which edges have more pills hidden, and keep the current one in view
+    var bar = document.querySelector('.jump');
+    var row = document.querySelector('.jump-row');
+    var edges = function () {
+      bar.classList.toggle('more-left', row.scrollLeft > 4);
+      bar.classList.toggle('more-right', row.scrollLeft + row.clientWidth < row.scrollWidth - 4);
+    };
+    var show = function (a) {
+      row.scrollTo({ left: a.offsetLeft - row.offsetLeft - (row.clientWidth - a.offsetWidth) / 2, behavior: calm ? 'auto' : 'smooth' });
+    };
+    row.addEventListener('scroll', edges, { passive: true });
+    window.addEventListener('resize', edges);
+    window.addEventListener('load', edges);
+    edges();
     jumps[0].classList.add('is-active');
     var spy = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (!en.isIntersecting) return;
         jumps.forEach(function (a) { a.classList.remove('is-active'); });
         var link = byId[en.target.id];
-        if (link) link.classList.add('is-active');
+        if (link) { link.classList.add('is-active'); show(link); }
       });
     }, { rootMargin: '-30% 0px -60% 0px' });
     Object.keys(byId).forEach(function (id) { var el = document.getElementById(id); if (el) spy.observe(el); });
@@ -142,6 +156,7 @@
   }
   wire('dlg-study', 'data-open-study');
   wire('dlg-visit', 'data-open-visit');
+  wire('dlg-testament', 'data-open-testament');
 
   // Plan a visit: fill in the next two Sundays, and the people counter
   function isoDate(d) {
@@ -179,7 +194,8 @@
       var when = f.querySelector('input[name="when"]:checked');
       return 'Your seat is saved, ' + first + '. See you on ' + (when && when.dataset.label ? when.dataset.label : 'Sunday') + ' at 10am. Meet us at the door when you arrive and we will show you to your seat.';
     },
-    message: function (first) { return 'Thank you, ' + first + '. Your message has been sent.'; }
+    message: function (first) { return 'Thank you, ' + first + '. Your message has been sent.'; },
+    testament: function (first) { return 'Thank you, ' + first + '. We will send your Bible soon.'; }
   };
   var WRONG = {
     name: 'Please tell us your name.',
@@ -195,12 +211,14 @@
       var btn = form.querySelector('button[type="submit"]');
       var val = function (n) { var el = form.elements[n]; return el && typeof el.value === 'string' ? el.value.trim() : ''; };
       var when = form.querySelector('input[name="when"]:checked');
+      // A free Bible request is stored as a message, marked so it is easy to spot in the admin page
+      var isNT = kind === 'testament';
       var body = {
-        p_kind: kind,
+        p_kind: isNT ? 'message' : kind,
         p_name: val('name'),
         p_phone: val('mobile') || null,
         p_email: val('email') || null,
-        p_details: val('details') || null,
+        p_details: isNT ? 'FREE BIBLE REQUEST. Post to: ' + val('details') : (val('details') || null),
         p_service_date: kind === 'visit' && when && /^\d{4}-\d\d-\d\d$/.test(when.value) ? when.value : null,
         p_party_size: kind === 'visit' ? (parseInt(val('count'), 10) || 1) : null,
         p_wants_reminder: !!(form.elements.reminder && form.elements.reminder.checked),
@@ -251,6 +269,7 @@
     each('data-c-lines', function (el, v) {
       el.textContent = '';
       lines(v).forEach(function (l, i) { if (i) el.appendChild(document.createElement('br')); el.appendChild(document.createTextNode(l)); });
+      if (el.hasAttribute('data-map')) el.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(lines(v).join(', '));
     });
     each('data-c-paras', function (el, v) {
       el.textContent = '';

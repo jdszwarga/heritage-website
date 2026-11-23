@@ -3,8 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Bible | Heritage Baptist Church</title>
-<meta name="description" content="Request a Bible study, read God's truth about us, and see what Heritage Baptist Church believes.">
+<title>The Bible | Heritage Baptist Church Matamata</title>
+<meta name="description" content="Get a free Bible in Matamata. Free King James New Testaments from our Bible stands or by post, Bible studies, and what Heritage Baptist Church believes.">
+<link rel="canonical" href="https://www.heritagebc.org.nz/bible.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Heritage Baptist Church Matamata">
+<meta property="og:locale" content="en_NZ">
+<meta property="og:title" content="The Bible | Heritage Baptist Church Matamata">
+<meta property="og:description" content="Get a free Bible in Matamata. Free King James New Testaments from our Bible stands or by post, Bible studies, and what Heritage Baptist Church believes.">
+<meta property="og:url" content="https://www.heritagebc.org.nz/bible.html">
+<meta property="og:image" content="https://www.heritagebc.org.nz/assets/imagery/group.jpg">
 <link rel="icon" type="image/svg+xml" href="assets/logos/heritage-mark.svg">
 <link rel="preload" href="fonts/Montserrat-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/Bungee-Regular.woff2" as="font" type="font/woff2" crossorigin>
@@ -24,7 +32,7 @@
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span class="bars" aria-hidden="true"></span>Menu</button>
     <nav class="site-nav" id="site-nav" aria-label="Main">
       <div class="nav-group">
-        <a class="nav-top" href="church.html">Our Church</a>
+        <a class="nav-top" href="church.html">Our Church <span class="arr" aria-hidden="true">&rarr;</span></a>
         <div class="nav-panel">
           <div class="wrap nav-panel-grid">
             <ul class="nav-sub">
@@ -37,12 +45,13 @@
         </div>
       </div>
       <div class="nav-group">
-        <a class="nav-top" href="bible.html" aria-current="page">The Bible</a>
+        <a class="nav-top" href="bible.html" aria-current="page">The Bible <span class="arr" aria-hidden="true">&rarr;</span></a>
         <div class="nav-panel">
           <div class="wrap nav-panel-grid">
             <ul class="nav-sub">
               <li><a href="bible.html#truth">God’s truth about us <span class="arr" aria-hidden="true">&rarr;</span></a></li>
               <li><a href="bible.html#study" data-open-study>Request a Bible study <span class="arr" aria-hidden="true">&rarr;</span></a></li>
+              <li><a href="bible.html#free-bible" data-open-testament>Free Bible <span class="arr" aria-hidden="true">&rarr;</span></a></li>
               <li><a href="bible.html#believe">What we believe <span class="arr" aria-hidden="true">&rarr;</span></a></li>
             </ul>
           </div>
@@ -50,6 +59,7 @@
       </div>
       <div class="nav-foot">
         <p class="times">Sundays <span data-c="sundays.times">10am &amp; 5pm</span></p>
+        <address><a href="https://www.google.com/maps/search/?api=1&amp;query=Matamata-Piako%20Civic%20%26%20Memorial%20Centre%2C%2011%20Tainui%20Street%2C%20Matamata%203400" data-map data-c-lines="contact.address">Matamata-Piako Civic &amp; Memorial Centre<br>11 Tainui Street, Matamata 3400</a></address>
         <a href="tel:+64273394078" data-c-phone="contact.phone" data-prefix="Call or text ">Call or text 027 339 4078</a>
         <a href="mailto:info@heritagebc.org.nz" data-c-email="contact.email">info@heritagebc.org.nz</a>
       </div>
@@ -63,6 +73,7 @@
   <nav class="jump" aria-label="On this page"><div class="wrap jump-row">
     <a href="#truth">God’s truth about us</a>
     <a href="#study">Request a Bible study</a>
+    <a href="#free-bible">Free Bible</a>
     <a href="#believe">What we believe</a>
   </div></nav>
 
@@ -101,6 +112,13 @@
     <div class="reveal"><a class="hb-button" href="church.html#contact" data-open-study>Request a Bible study with one of our pastors <span class="arr" aria-hidden="true">&rarr;</span></a></div>
     <p class="lead reveal" data-c-linkphones="study.note">Or text Pastor Josh <a href="sms:+64273394078">027 339 4078</a> or Pastor Lim <a href="sms:+642102954744">021 0295 4744</a> to get a cuppa or to learn more about God’s gift of forgiveness.</p>
   </div></section>
+
+  <section class="block" id="free-bible"><div class="wrap">
+    <h2 class="sec-title reveal">Free Bible</h2>
+    <p class="lead reveal" data-c="freebible.body">Our Bible stands around Matamata hold free King James New Testaments. Take one, or ask and we will post one to you.</p>
+    <div class="hb-frame free-photo" hidden><img alt="A Bible stand holding free New Testaments" loading="lazy" data-c-img="img.freebible"></div>
+    <div class="reveal"><a class="hb-button" href="church.html#contact" data-open-testament>Request a free Bible <span class="arr" aria-hidden="true">&rarr;</span></a></div>
+  </section>
 
   <section class="block" id="believe"><div class="wrap">
     <h2 class="sec-title reveal">What we believe</h2>
@@ -183,6 +201,7 @@
           <ul>
             <li><a href="bible.html#truth">God’s truth about us</a></li>
             <li><a href="bible.html#study" data-open-study>Request a Bible study</a></li>
+            <li><a href="bible.html#free-bible" data-open-testament>Free Bible</a></li>
             <li><a href="bible.html#believe">What we believe</a></li>
           </ul>
         </div>
@@ -209,12 +228,30 @@
   </div>
 </dialog>
 
+<dialog class="study" id="dlg-testament" aria-labelledby="testament-title">
+  <div class="study-inner">
+    <div class="study-head">
+      <h2 class="hs-title hs-title-sm" id="testament-title">Request a free Bible</h2>
+      <button class="study-close" type="button" aria-label="Close" data-close-dialog>&times;</button>
+    </div>
+    <form class="form" data-form="testament">
+      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="field"><label for="t-name">Name</label><input id="t-name" name="name" autocomplete="name" required></div>
+      <div class="field"><label for="t-mobile">Mobile</label><input id="t-mobile" name="mobile" type="tel" autocomplete="tel" inputmode="tel" required></div>
+      <div class="field"><label for="t-address">Postal address</label><textarea id="t-address" name="details" autocomplete="street-address" required></textarea></div>
+      <div><button class="hb-button" type="submit">Send request <span class="arr" aria-hidden="true">&rarr;</span></button></div>
+      <p class="small form-note" role="status"></p>
+    </form>
+  </div>
+</dialog>
+
 <dialog class="study" id="dlg-visit" aria-labelledby="visit-title">
   <div class="study-inner">
     <div class="study-head">
       <h2 class="hs-title hs-title-sm" id="visit-title">Plan a visit</h2>
       <button class="study-close" type="button" aria-label="Close" data-close-dialog>&times;</button>
     </div>
+    <address class="visit-where"><a href="https://www.google.com/maps/search/?api=1&amp;query=Matamata-Piako%20Civic%20%26%20Memorial%20Centre%2C%2011%20Tainui%20Street%2C%20Matamata%203400" data-map data-c-lines="contact.address">Matamata-Piako Civic &amp; Memorial Centre<br>11 Tainui Street, Matamata 3400</a></address>
     <form class="form" data-form="visit">
       <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
       <fieldset class="choice">

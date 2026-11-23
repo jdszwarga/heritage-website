@@ -361,6 +361,22 @@ window.HBC_FIELDS = [
   "hint": "Phone numbers become tap-to-text links."
  },
  {
+  "group": "Free Bible",
+  "key": "freebible.body",
+  "label": "Free Bible paragraph",
+  "type": "long",
+  "value": "Our Bible stands around Matamata hold free King James New Testaments. Take one, or ask and we will post one to you.",
+  "hint": ""
+ },
+ {
+  "group": "Free Bible",
+  "key": "img.freebible",
+  "label": "Photo of the Bible stands",
+  "type": "image",
+  "value": "",
+  "hint": "Optional. Shown under the paragraph once a photo is added."
+ },
+ {
   "group": "What we believe",
   "key": "believe.1.title",
   "label": "Section 1 heading",
