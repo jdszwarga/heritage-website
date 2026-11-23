@@ -129,6 +129,14 @@ window.HBC_FIELDS = [
   "hint": ""
  },
  {
+  "group": "Sunday schedule",
+  "key": "sched.4.details",
+  "label": "Row 4 details",
+  "type": "long",
+  "value": "",
+  "hint": "Shown when the row is opened. One line per row. Optional: leave blank and the row does not open."
+ },
+ {
   "group": "Home page",
   "key": "home.verse",
   "label": "Verse",
@@ -177,20 +185,28 @@ window.HBC_FIELDS = [
   "hint": "One paragraph per line."
  },
  {
-  "group": "Our story",
-  "key": "story.body",
-  "label": "Our story",
+  "group": "Our purpose",
+  "key": "purpose.body",
+  "label": "Our purpose",
   "type": "long",
   "value": "The emphasis of Heritage Baptist Church is to show each individual that salvation through Jesus Christ is a compelling answer, the only answer, and the necessary answer for obtaining peace with God and peace for eternity.\nThe heartbeat of Heritage Baptist Church is seeing families with future generations continuing in their faith, by highlighting the importance of the individual personally knowing the why of their Christian beliefs and accepting it as their own.\nThe difference of Heritage Baptist Church is the authority of the Word of God and primary focus on the preaching of the Word of God. We believe church is not just a gathering or an entertainment hour, but rather an opportunity for Christians to be changed by God’s Word, then organised to share the gospel message in our community and abroad.",
   "hint": "One paragraph per line."
  },
  {
-  "group": "Our story",
+  "group": "Our purpose",
   "key": "img.story",
-  "label": "Our story photo",
+  "label": "Our purpose photo",
   "type": "image",
   "value": "assets/imagery/group-crop.jpg",
   "hint": ""
+ },
+ {
+  "group": "Our story",
+  "key": "story.timeline",
+  "label": "Highlights",
+  "type": "timeline",
+  "value": "",
+  "hint": "Oldest first. Each highlight has a date, a line or two of text and, if you like, one photo. The Our story section and its menu links appear once there is at least one highlight."
  },
  {
   "group": "Our pastors",
@@ -374,7 +390,7 @@ window.HBC_FIELDS = [
   "label": "Photo of the Bible stands",
   "type": "image",
   "value": "",
-  "hint": "Optional. Shown under the paragraph once a photo is added."
+  "hint": "Optional. Fills the background of the Free Bible section once a photo is added."
  },
  {
   "group": "What we believe",

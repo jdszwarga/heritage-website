@@ -86,8 +86,8 @@ for n, (t, title, det) in enumerate([
     ("5PM", "Evening service", None)], 1):
     field(G, "sched.%d.time" % n, "Row %d time" % n, t)
     field(G, "sched.%d.title" % n, "Row %d title" % n, title)
-    if det is not None:
-        field(G, "sched.%d.details" % n, "Row %d details" % n, det, "long", "Shown when the row is opened. One line per row.")
+    field(G, "sched.%d.details" % n, "Row %d details" % n, det or "", "long",
+          "Shown when the row is opened. One line per row." + ("" if det else " Optional: leave blank and the row does not open."))
 G = "Home page"
 field(G, "home.verse", "Verse", "“Search the scriptures; for in them ye think ye have eternal life: and they are they which testify of me.”", "long")
 field(G, "home.verse_ref", "Verse reference", "John 5:39")
@@ -115,10 +115,14 @@ VISIT_BODY = (
 field(G, "visit.thursday", "Thursday line", VISIT_THURSDAY)
 field(G, "visit.body", "What a visit is like", VISIT_BODY, "long", "One paragraph per line.")
 
+G = "Our purpose"
+purpose = "\n".join(x for t, x in items[: find("h1", "Our Purpose")] if t == "p" and x.startswith("The "))
+field(G, "purpose.body", "Our purpose", purpose, "long", "One paragraph per line.")
+field(G, "img.story", "Our purpose photo", "assets/imagery/group-crop.jpg", "image")
+
 G = "Our story"
-story ="\n".join(x for t, x in items[: find("h1", "Our Purpose")] if t == "p" and x.startswith("The "))
-field(G, "story.body", "Our story", story, "long", "One paragraph per line.")
-field(G, "img.story", "Our story photo", "assets/imagery/group-crop.jpg", "image")
+field(G, "story.timeline", "Highlights", "", "timeline",
+      "Oldest first. Each highlight has a date, a line or two of text and, if you like, one photo. The Our story section and its menu links appear once there is at least one highlight.")
 
 G = "Our pastors"
 pastors_html = []
@@ -167,10 +171,11 @@ truth_html = []
 for n, (h, v) in enumerate(TRUTH, 1):
     field(G, "truth.%d.title" % n, "Point %d heading" % n, h)
     field(G, "truth.%d.verses" % n, "Point %d verses" % n, v, "long", "One verse per line, ending with a spaced hyphen and the reference.")
-    truth_html.append('''      <div class="hb-point reveal">
+    truth_html.append('''      <li class="tl-item hb-point reveal">
+        <p class="tl-when" aria-hidden="true">%d</p>
         <h3 data-c="truth.%d.title">%s</h3>
         <div data-c-verses="truth.%d.verses">%s</div>
-      </div>''' % (n, E(h), n, verses_html(v)))
+      </li>''' % (n, n, E(h), n, verses_html(v)))
 truth_html = "\n".join(truth_html)
 STUDY_NOTE = "Or text Pastor Josh 027 339 4078 or Pastor Lim 021 0295 4744 to get a cuppa or to learn more about God’s gift of forgiveness."
 field(G, "study.note", "Line under the Bible study button", STUDY_NOTE, "long", "Phone numbers become tap-to-text links.")
@@ -178,7 +183,7 @@ field(G, "study.note", "Line under the Bible study button", STUDY_NOTE, "long", 
 G = "Free Bible"
 FREE_BIBLE = "Our Bible stands around Matamata hold free King James New Testaments. Take one, or ask and we will post one to you."
 field(G, "freebible.body", "Free Bible paragraph", FREE_BIBLE, "long")
-field(G, "img.freebible", "Photo of the Bible stands", "", "image", "Optional. Shown under the paragraph once a photo is added.")
+field(G, "img.freebible", "Photo of the Bible stands", "", "image", "Optional. Fills the background of the Free Bible section once a photo is added.")
 
 
 def linkphones_html(text):
@@ -215,11 +220,12 @@ for n, (title, lines) in enumerate(creed, 1):
 creed_html = "\n".join(creed_html)
 
 # ---------------- pages ----------------
-page("church.html", "Our Church", "Visit Heritage Baptist Church in Matamata. What a Sunday is like, our story, our pastors and how to contact us.", """
+page("church.html", "Our Church", "Visit Heritage Baptist Church in Matamata. What a Sunday is like, our purpose, our story, our pastors and how to contact us.", """
   <h1 class="sr-only">Our Church</h1>
   <nav class="jump" aria-label="On this page"><div class="wrap jump-row">
     <a href="#visit">Plan a visit</a>
-    <a href="#story">Our story</a>
+    <a href="#purpose">Our purpose</a>
+    <a href="#story" data-needs="story.timeline" hidden>Our story</a>
     <a href="#pastors">Our pastors</a>
     <a href="#contact">Contact</a>
   </div></nav>
@@ -236,12 +242,18 @@ page("church.html", "Our Church", "Visit Heritage Baptist Church in Matamata. Wh
     <div class="prose reveal" data-c-paras="visit.body">""" + paras_html(VISIT_BODY) + """</div>
   </div></section>
 
-  <section class="block" id="story"><div class="wrap">
-    <h2 class="sec-title reveal">Our story</h2>
+  <section class="block" id="purpose"><div class="wrap">
+    <h2 class="sec-title reveal">Our purpose</h2>
     <div class="story-grid">
-      <div class="prose reveal" data-c-paras="story.body">""" + paras_html(story) + """</div>
+      <div class="prose reveal" data-c-paras="purpose.body">""" + paras_html(purpose) + """</div>
       <div class="hb-frame wipe" style="aspect-ratio:3/2;height:auto"><img src="assets/imagery/group-crop.jpg" alt="Members of the church family standing together, smiling" loading="lazy" data-c-img="img.story"></div>
     </div>
+  </div></section>
+
+  <!-- Our story: a timeline of highlights added in the admin page. Hidden until there is at least one. -->
+  <section class="block" id="story" data-needs="story.timeline" hidden><div class="wrap">
+    <h2 class="sec-title reveal">Our story</h2>
+    <ol class="tl tl-alt tl-open" data-c-timeline="story.timeline"></ol>
   </div></section>
 
   <section class="block" id="pastors"><div class="wrap">
@@ -278,23 +290,23 @@ page("bible.html", "The Bible", "Get a free Bible in Matamata. Free King James N
 
   <section class="block" id="truth"><div class="wrap">
     <h2 class="sec-title reveal">God’s truth about us</h2>
-    <div class="hb-points">
+    <ol class="tl tl-flow">
 """ + truth_html + """
-    </div>
+      <li class="tl-item tl-end reveal" id="study">
+        <h2 class="sr-only">Request a Bible study</h2>
+        <a class="hb-button" href="church.html#contact" data-open-study>Request a Bible study with one of our pastors """ + ARR + """</a>
+        <p class="lead" data-c-linkphones="study.note">""" + linkphones_html(STUDY_NOTE) + """</p>
+      </li>
+    </ol>
   </div></section>
 
-  <section class="block block-join" id="study"><div class="wrap">
-    <h2 class="sr-only">Request a Bible study</h2>
-    <div class="reveal"><a class="hb-button" href="church.html#contact" data-open-study>Request a Bible study with one of our pastors """ + ARR + """</a></div>
-    <p class="lead reveal" data-c-linkphones="study.note">""" + linkphones_html(STUDY_NOTE) + """</p>
-  </div></section>
-
-  <section class="block" id="free-bible"><div class="wrap">
+  <section class="block free" id="free-bible">
+    <div class="free-bg" hidden><img alt="" data-c-img="img.freebible"></div>
+    <div class="wrap">
     <h2 class="sec-title reveal">Free Bible</h2>
     <p class="lead reveal" data-c="freebible.body">""" + E(FREE_BIBLE) + """</p>
-    <div class="hb-frame free-photo" hidden><img alt="A Bible stand holding free New Testaments" loading="lazy" data-c-img="img.freebible"></div>
     <div class="reveal"><a class="hb-button" href="church.html#contact" data-open-testament>Request a free Bible """ + ARR + """</a></div>
-  </section>
+  </div></section>
 
   <section class="block" id="believe"><div class="wrap">
     <h2 class="sec-title reveal">What we believe</h2>

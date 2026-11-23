@@ -127,6 +127,7 @@
     var btn = li.querySelector('button.sched-row');
     if (!btn) return;
     btn.addEventListener('click', function () {
+      if (li.classList.contains('no-more')) return; // a row with no details has nothing to open
       var open = !li.classList.contains('is-open');
       li.parentNode.querySelectorAll('li.is-open').forEach(function (o) {
         o.classList.remove('is-open');
@@ -258,7 +259,36 @@
   function make(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; n.textContent = text; return n; }
   function nzTel(v) { var d = String(v).replace(/\D/g, ''); return d.charAt(0) === '0' ? '+64' + d.slice(1) : '+' + d; }
   function lines(v) { return String(v).split('\n').map(function (l) { return l.trim(); }).filter(Boolean); }
+  // Our story: the highlights are kept as one list. Entries with neither a date nor text are skipped.
+  function highlights(v) {
+    try { var list = JSON.parse(v || '[]'); } catch (err) { return []; }
+    if (!Array.isArray(list)) return [];
+    return list.filter(function (h) { return h && (String(h.date || '').trim() || String(h.text || '').trim()); });
+  }
+  function reveal(el) { el.classList.add('reveal'); if (io) io.observe(el); else el.classList.add('is-in'); }
   function applyContent(map) {
+    document.querySelectorAll('[data-needs]').forEach(function (el) { el.hidden = !highlights(map[el.getAttribute('data-needs')]).length; });
+    document.querySelectorAll('[data-c-timeline]').forEach(function (el) {
+      el.textContent = '';
+      highlights(map[el.getAttribute('data-c-timeline')]).forEach(function (h) {
+        var li = make('li', 'tl-item', '');
+        var body = make('div', 'tl-body', '');
+        if (String(h.date || '').trim()) body.appendChild(make('p', 'tl-when', String(h.date).trim()));
+        var text = make('div', 'tl-text', '');
+        lines(h.text || '').forEach(function (l) { text.appendChild(make('p', '', l)); });
+        body.appendChild(text);
+        li.appendChild(body);
+        if (/^(https:\/\/|assets\/)/.test(h.img || '')) {
+          var frame = make('div', 'hb-frame tl-photo', '');
+          var img = document.createElement('img');
+          img.alt = ''; img.loading = 'lazy'; img.src = h.img;
+          frame.appendChild(img);
+          li.appendChild(frame);
+        }
+        el.appendChild(li);
+        reveal(li);
+      });
+    });
     var each = function (attr, fn) {
       document.querySelectorAll('[' + attr + ']').forEach(function (el) {
         var v = map[el.getAttribute(attr)];
@@ -269,7 +299,8 @@
     each('data-c-lines', function (el, v) {
       el.textContent = '';
       lines(v).forEach(function (l, i) { if (i) el.appendChild(document.createElement('br')); el.appendChild(document.createTextNode(l)); });
-      if (el.hasAttribute('data-map')) el.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(lines(v).join(', '));
+      // The map link opens the church's own Google profile: its name with the street address (the venue's name is left out)
+      if (el.hasAttribute('data-map')) el.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(['Heritage Baptist Church'].concat(lines(v).length > 1 ? lines(v).slice(1) : lines(v)).join(', '));
     });
     each('data-c-paras', function (el, v) {
       el.textContent = '';
@@ -278,6 +309,7 @@
         else if (l.indexOf('> ') === 0) el.appendChild(make('p', 'creed-refs', l.slice(2)));
         else el.appendChild(make('p', '', l));
       });
+      var bare = el.closest('.no-more'); if (bare) bare.classList.remove('no-more');
     });
     each('data-c-verses', function (el, v) {
       el.textContent = '';
@@ -306,9 +338,10 @@
       // The cut-out in front of the Sundays title only fits the built-in family photo
       if (el.classList.contains('ph-a') && !/group-crop\.jpg$/.test(v)) { var front = document.querySelector('.sundays-front'); if (front) front.hidden = true; }
       var frame = el.closest('[hidden]'); if (frame) frame.hidden = false;
+      var sec = el.closest('.free'); if (sec) sec.classList.add('has-photo');
     });
   }
-  if (cfg.url && document.querySelector('[data-c],[data-c-lines],[data-c-paras],[data-c-verses],[data-c-linkphones],[data-c-phone],[data-c-email],[data-c-img]')) {
+  if (cfg.url && document.querySelector('[data-c],[data-c-lines],[data-c-paras],[data-c-verses],[data-c-linkphones],[data-c-phone],[data-c-email],[data-c-img],[data-c-timeline],[data-needs]')) {
     try { var kept = JSON.parse(localStorage.getItem('hbc-content') || 'null'); if (kept) applyContent(kept); } catch (err) { /* no saved copy */ }
     api('web_content?select=key,value').then(function (r) { return r.ok ? r.json() : []; }).then(function (rows) {
       var map = {};

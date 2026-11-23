@@ -182,7 +182,10 @@
           label.htmlFor = id;
           wrap.appendChild(label);
           var input;
-          if (f.type === 'image') {
+          if (f.type === 'timeline') {
+            label.removeAttribute('for');
+            inputs.push(timelineField(f, saved[f.key], wrap));
+          } else if (f.type === 'image') {
             var row = el('div', 'adm-photo');
             var img = el('img');
             img.alt = '';
@@ -229,31 +232,172 @@
       });
     });
   }
+  // Photos straight from a phone are far bigger than a web page needs. They are scaled to 2000px on the long side before upload.
+  function shrink(file) {
+    var MAX = 2000;
+    return new Promise(function (done) {
+      var img = new Image();
+      img.onload = function () {
+        var k = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
+        if (k === 1 && file.size < 600000) { done(file); return; }
+        var c = document.createElement('canvas');
+        c.width = Math.round(img.naturalWidth * k);
+        c.height = Math.round(img.naturalHeight * k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob(function (blob) {
+          done(blob && blob.size < file.size ? new File([blob], 'photo.jpg', { type: 'image/jpeg' }) : file);
+        }, 'image/jpeg', 0.85);
+      };
+      img.onerror = function () { done(file); };
+      img.src = URL.createObjectURL(file);
+    });
+  }
+  var photoN = 0;
+  function putPhoto(key, original) {
+    var path;
+    return shrink(original).then(function (file) {
+      var ext = file.type === 'image/jpeg' ? 'jpg' : (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '');
+      path = key.replace(/\W/g, '-') + '-' + Date.now() + '-' + (photoN++) + '.' + ext;
+      return sb.storage.from('website').upload(path, file, { contentType: file.type, cacheControl: '31536000' });
+    }).then(function (r) {
+      if (r.error) throw r.error;
+      return sb.storage.from('website').getPublicUrl(path).data.publicUrl;
+    });
+  }
+
+  // Our story: a list of highlights that can be added to, reordered and removed. Saved as one value.
+  function timelineField(f, saved, wrap) {
+    var list = [];
+    try { list = JSON.parse(saved || '[]'); } catch (err) { list = []; }
+    if (!Array.isArray(list)) list = [];
+    var entries = list.map(function (h) { return { date: h.date || '', text: h.text || '', img: h.img || '', file: null }; });
+    var box = el('div', 'adm-tl');
+    var item = { f: f, timeline: true, wrap: wrap, start: JSON.stringify(entries.map(plain)) };
+    function plain(e) { return { date: tidy(e.date), text: tidy(e.text), img: e.img }; }
+    function kept() { return entries.filter(function (e) { return tidy(e.date) || tidy(e.text); }); }
+    function touched() {
+      var dirty = entries.some(function (e) { return e.file; }) || JSON.stringify(kept().map(plain)) !== item.start;
+      wrap.classList.toggle('is-changed', dirty);
+    }
+    function draw() {
+      box.textContent = '';
+      entries.forEach(function (e, i) {
+        var row = el('div', 'adm-tl-item');
+        var head = el('div', 'adm-tl-head');
+        head.appendChild(el('span', 'adm-tl-n', 'Highlight ' + (i + 1)));
+        [['Move up', -1], ['Move down', 1]].forEach(function (m) {
+          var b = el('button', 'adm-link', m[0]);
+          b.type = 'button';
+          b.disabled = i + m[1] < 0 || i + m[1] >= entries.length;
+          b.addEventListener('click', function () { entries.splice(i + m[1], 0, entries.splice(i, 1)[0]); draw(); touched(); });
+          head.appendChild(b);
+        });
+        var del = el('button', 'adm-link adm-danger', 'Remove');
+        del.type = 'button';
+        del.addEventListener('click', function () {
+          if ((e.date || e.text || e.img) && !confirm('Remove this highlight?')) return;
+          entries.splice(i, 1); draw(); touched();
+        });
+        head.appendChild(del);
+        row.appendChild(head);
+
+        var date = el('input');
+        date.placeholder = 'Date, for example March 2024';
+        date.value = e.date;
+        date.setAttribute('aria-label', 'Highlight ' + (i + 1) + ' date');
+        date.addEventListener('input', function () { e.date = date.value; touched(); });
+        row.appendChild(date);
+
+        var text = el('textarea');
+        text.rows = 1;
+        text.placeholder = 'What happened';
+        text.value = e.text;
+        text.setAttribute('aria-label', 'Highlight ' + (i + 1) + ' text');
+        text.addEventListener('input', function () { e.text = text.value; grow(text); touched(); });
+        row.appendChild(text);
+
+        var photo = el('div', 'adm-photo');
+        var img = el('img');
+        img.alt = '';
+        if (e.file) img.src = URL.createObjectURL(e.file); else if (e.img) img.src = e.img; else img.hidden = true;
+        var file = el('input');
+        file.type = 'file';
+        file.accept = 'image/jpeg,image/png,image/webp';
+        file.setAttribute('aria-label', 'Highlight ' + (i + 1) + ' photo');
+        var clear = el('button', 'adm-link', 'Remove photo');
+        clear.type = 'button';
+        clear.hidden = !(e.file || e.img);
+        file.addEventListener('change', function () {
+          if (!file.files[0]) return;
+          e.file = file.files[0];
+          img.src = URL.createObjectURL(e.file); img.hidden = false; clear.hidden = false;
+          touched();
+        });
+        clear.addEventListener('click', function () { e.file = null; e.img = ''; file.value = ''; img.hidden = true; clear.hidden = true; touched(); });
+        photo.appendChild(img);
+        photo.appendChild(file);
+        photo.appendChild(clear);
+        row.appendChild(photo);
+        box.appendChild(row);
+      });
+      var add = el('button', 'adm-chip', 'Add highlight');
+      add.type = 'button';
+      add.addEventListener('click', function () {
+        entries.push({ date: '', text: '', img: '', file: null });
+        draw();
+        var rows = box.querySelectorAll('.adm-tl-item');
+        rows[rows.length - 1].querySelector('input').focus();
+      });
+      box.appendChild(add);
+      box.querySelectorAll('textarea').forEach(grow);
+    }
+    // Uploads any new photos, then gives back the list as it should be saved
+    item.collect = function () {
+      return Promise.all(kept().map(function (e) {
+        if (!e.file) return null;
+        return putPhoto(f.key, e.file).then(function (url) { e.img = url; e.file = null; });
+      })).then(function () { return JSON.stringify(kept().map(plain)); });
+    };
+    draw();
+    wrap.appendChild(box);
+    return item;
+  }
+
   function saveGroup(inputs, btn, said) {
     btn.disabled = true;
     said.textContent = 'Saving…';
-    var rows = [], uploads = [];
+    var rows = [], uploads = [], removals = [];
     inputs.forEach(function (it) {
-      if (it.image) {
-        var file = it.input.files[0];
-        if (!file) return;
-        var ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '');
-        var path = it.f.key.replace(/\W/g, '-') + '-' + Date.now() + '.' + ext;
-        uploads.push(sb.storage.from('website').upload(path, file, { contentType: file.type, cacheControl: '31536000' }).then(function (r) {
-          if (r.error) throw r.error;
-          var url = sb.storage.from('website').getPublicUrl(path).data.publicUrl;
+      if (it.timeline) {
+        uploads.push(it.collect().then(function (v) {
+          if (v === it.start) return;
+          if (v === '[]') removals.push(it.f.key); else rows.push({ key: it.f.key, value: v });
+          it.start = v;
+          it.wrap.classList.remove('is-changed');
+        }));
+      } else if (it.image) {
+        if (!it.input.files[0]) return;
+        uploads.push(putPhoto(it.f.key, it.input.files[0]).then(function (url) {
           rows.push({ key: it.f.key, value: url });
           it.start = url; it.input.value = ''; it.wrap.classList.remove('is-changed');
         }));
       } else if (it.input.value !== it.start) {
         var v = tidy(it.input.value);
-        if (!v) return; // blank means "leave as it is"; the site keeps its built-in wording
+        if (!v) {
+          // Blank means "leave as it is" (the site keeps its built-in wording), except on an optional field, where it takes the wording away again
+          if (it.f.value === '' && it.start !== '') { removals.push(it.f.key); it.pending = ''; }
+          return;
+        }
         rows.push({ key: it.f.key, value: v });
         it.pending = v;
       }
     });
     Promise.all(uploads).then(function () {
-      if (!rows.length) return { error: null, none: true };
+      if (!removals.length) return { error: null };
+      return sb.from('web_content').delete().in('key', removals);
+    }).then(function (r) {
+      if (r.error) throw r.error;
+      if (!rows.length) return { error: null, none: !removals.length };
       var now = new Date().toISOString();
       rows.forEach(function (row) { row.updated_at = now; row.updated_by = me.id; });
       return sb.from('web_content').upsert(rows);

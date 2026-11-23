@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Our Church | Heritage Baptist Church Matamata</title>
-<meta name="description" content="Visit Heritage Baptist Church in Matamata. What a Sunday is like, our story, our pastors and how to contact us.">
+<meta name="description" content="Visit Heritage Baptist Church in Matamata. What a Sunday is like, our purpose, our story, our pastors and how to contact us.">
 <link rel="canonical" href="https://www.heritagebc.org.nz/church.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Heritage Baptist Church Matamata">
 <meta property="og:locale" content="en_NZ">
 <meta property="og:title" content="Our Church | Heritage Baptist Church Matamata">
-<meta property="og:description" content="Visit Heritage Baptist Church in Matamata. What a Sunday is like, our story, our pastors and how to contact us.">
+<meta property="og:description" content="Visit Heritage Baptist Church in Matamata. What a Sunday is like, our purpose, our story, our pastors and how to contact us.">
 <meta property="og:url" content="https://www.heritagebc.org.nz/church.html">
 <meta property="og:image" content="https://www.heritagebc.org.nz/assets/imagery/group.jpg">
 <link rel="icon" type="image/svg+xml" href="assets/logos/heritage-mark.svg">
@@ -37,7 +37,8 @@
           <div class="wrap nav-panel-grid">
             <ul class="nav-sub">
               <li><a href="church.html#visit">Plan a visit <span class="arr" aria-hidden="true">&rarr;</span></a></li>
-              <li><a href="church.html#story">Our story <span class="arr" aria-hidden="true">&rarr;</span></a></li>
+              <li><a href="church.html#purpose">Our purpose <span class="arr" aria-hidden="true">&rarr;</span></a></li>
+              <li data-needs="story.timeline" hidden><a href="church.html#story">Our story <span class="arr" aria-hidden="true">&rarr;</span></a></li>
               <li><a href="church.html#pastors">Our pastors <span class="arr" aria-hidden="true">&rarr;</span></a></li>
               <li><a href="church.html#contact">Contact <span class="arr" aria-hidden="true">&rarr;</span></a></li>
             </ul>
@@ -59,7 +60,7 @@
       </div>
       <div class="nav-foot">
         <p class="times">Sundays <span data-c="sundays.times">10am &amp; 5pm</span></p>
-        <address><a href="https://www.google.com/maps/search/?api=1&amp;query=Matamata-Piako%20Civic%20%26%20Memorial%20Centre%2C%2011%20Tainui%20Street%2C%20Matamata%203400" data-map data-c-lines="contact.address">Matamata-Piako Civic &amp; Memorial Centre<br>11 Tainui Street, Matamata 3400</a></address>
+        <address><a href="https://www.google.com/maps/search/?api=1&amp;query=Heritage%20Baptist%20Church%2C%2011%20Tainui%20Street%2C%20Matamata%203400" data-map data-c-lines="contact.address">Matamata-Piako Civic &amp; Memorial Centre<br>11 Tainui Street, Matamata 3400</a></address>
         <a href="tel:+64273394078" data-c-phone="contact.phone" data-prefix="Call or text ">Call or text 027 339 4078</a>
         <a href="mailto:info@heritagebc.org.nz" data-c-email="contact.email">info@heritagebc.org.nz</a>
       </div>
@@ -72,7 +73,8 @@
   <h1 class="sr-only">Our Church</h1>
   <nav class="jump" aria-label="On this page"><div class="wrap jump-row">
     <a href="#visit">Plan a visit</a>
-    <a href="#story">Our story</a>
+    <a href="#purpose">Our purpose</a>
+    <a href="#story" data-needs="story.timeline" hidden>Our story</a>
     <a href="#pastors">Our pastors</a>
     <a href="#contact">Contact</a>
   </div></nav>
@@ -89,12 +91,18 @@
     <div class="prose reveal" data-c-paras="visit.body"><p>Come to the Matamata-Piako Civic and Memorial Centre a few minutes before 10am. Someone will meet you at the door and show you to a seat.</p><p>At 10am there is Bible study, with Sunday school for the kids. The service follows at 11am, with hymns and preaching from the Bible. There is a creche for little ones and Bible teaching for children. At 12pm we share lunch, and you are welcome to stay.</p><p>On Sunday evenings at 5pm we meet again for another service. On Thursdays at 7pm we meet to pray together.</p></div>
   </div></section>
 
-  <section class="block" id="story"><div class="wrap">
-    <h2 class="sec-title reveal">Our story</h2>
+  <section class="block" id="purpose"><div class="wrap">
+    <h2 class="sec-title reveal">Our purpose</h2>
     <div class="story-grid">
-      <div class="prose reveal" data-c-paras="story.body"><p>The emphasis of Heritage Baptist Church is to show each individual that salvation through Jesus Christ is a compelling answer, the only answer, and the necessary answer for obtaining peace with God and peace for eternity.</p><p>The heartbeat of Heritage Baptist Church is seeing families with future generations continuing in their faith, by highlighting the importance of the individual personally knowing the why of their Christian beliefs and accepting it as their own.</p><p>The difference of Heritage Baptist Church is the authority of the Word of God and primary focus on the preaching of the Word of God. We believe church is not just a gathering or an entertainment hour, but rather an opportunity for Christians to be changed by God’s Word, then organised to share the gospel message in our community and abroad.</p></div>
+      <div class="prose reveal" data-c-paras="purpose.body"><p>The emphasis of Heritage Baptist Church is to show each individual that salvation through Jesus Christ is a compelling answer, the only answer, and the necessary answer for obtaining peace with God and peace for eternity.</p><p>The heartbeat of Heritage Baptist Church is seeing families with future generations continuing in their faith, by highlighting the importance of the individual personally knowing the why of their Christian beliefs and accepting it as their own.</p><p>The difference of Heritage Baptist Church is the authority of the Word of God and primary focus on the preaching of the Word of God. We believe church is not just a gathering or an entertainment hour, but rather an opportunity for Christians to be changed by God’s Word, then organised to share the gospel message in our community and abroad.</p></div>
       <div class="hb-frame wipe" style="aspect-ratio:3/2;height:auto"><img src="assets/imagery/group-crop.jpg" alt="Members of the church family standing together, smiling" loading="lazy" data-c-img="img.story"></div>
     </div>
+  </div></section>
+
+  <!-- Our story: a timeline of highlights added in the admin page. Hidden until there is at least one. -->
+  <section class="block" id="story" data-needs="story.timeline" hidden><div class="wrap">
+    <h2 class="sec-title reveal">Our story</h2>
+    <ol class="tl tl-alt tl-open" data-c-timeline="story.timeline"></ol>
   </div></section>
 
   <section class="block" id="pastors"><div class="wrap">
@@ -148,7 +156,8 @@
           <h2><a href="church.html">Our Church</a></h2>
           <ul>
             <li><a href="seat.html" data-open-visit>Plan a visit</a></li>
-            <li><a href="church.html#story">Our story</a></li>
+            <li><a href="church.html#purpose">Our purpose</a></li>
+            <li data-needs="story.timeline" hidden><a href="church.html#story">Our story</a></li>
             <li><a href="church.html#pastors">Our pastors</a></li>
           </ul>
         </div>
@@ -207,7 +216,7 @@
       <h2 class="hs-title hs-title-sm" id="visit-title">Plan a visit</h2>
       <button class="study-close" type="button" aria-label="Close" data-close-dialog>&times;</button>
     </div>
-    <address class="visit-where"><a href="https://www.google.com/maps/search/?api=1&amp;query=Matamata-Piako%20Civic%20%26%20Memorial%20Centre%2C%2011%20Tainui%20Street%2C%20Matamata%203400" data-map data-c-lines="contact.address">Matamata-Piako Civic &amp; Memorial Centre<br>11 Tainui Street, Matamata 3400</a></address>
+    <address class="visit-where"><a href="https://www.google.com/maps/search/?api=1&amp;query=Heritage%20Baptist%20Church%2C%2011%20Tainui%20Street%2C%20Matamata%203400" data-map data-c-lines="contact.address">Matamata-Piako Civic &amp; Memorial Centre<br>11 Tainui Street, Matamata 3400</a></address>
     <form class="form" data-form="visit">
       <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
       <fieldset class="choice">

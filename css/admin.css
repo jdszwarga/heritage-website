@@ -58,3 +58,12 @@ body.admin { background: var(--surface); min-height: 100svh; }
 .adm-photo img { width: 160px; height: 106px; object-fit: cover; background: var(--photo-ground); filter: grayscale(1); }
 .adm-save { display: flex; align-items: center; gap: var(--space-4); position: sticky; bottom: 0; padding: var(--space-3) 0; background: var(--surface-raised); }
 .field.is-changed label::after { content: " \2022 changed"; color: var(--maroon); font-weight: 600; }
+
+/* Our story highlights */
+.adm-tl { display: grid; gap: var(--space-3); justify-items: start; }
+.adm-tl-item { width: 100%; display: grid; gap: var(--space-2); padding: var(--space-3); border: 1px solid var(--rule); background: var(--surface); }
+.adm-tl-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2) var(--space-4); font-size: 14px; }
+.adm-tl-n { font-weight: 700; margin-right: auto; }
+.adm-tl-head .adm-link { font-size: 14px; }
+.adm-tl-head .adm-link:disabled { opacity: .35; cursor: default; text-decoration: none; }
+.adm-tl-head .adm-danger { margin-left: 0; }

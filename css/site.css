@@ -160,6 +160,9 @@ button.sched-row:focus-visible { outline: 2px solid var(--focus); outline-offset
 .sched-more > div { overflow: hidden; padding-left: calc(92px + var(--space-4)); }
 .sched-more p { font-family: var(--font-serif); font-weight: 500; font-size: 20px; line-height: 28px; color: var(--text); }
 .sched-more p:last-child { padding-bottom: var(--space-6); }
+/* A row with no details is a plain line: no plus sign, nothing to open */
+.sched li.no-more .sched-row i, .sched li.no-more .sched-more { display: none; }
+.sched li.no-more button.sched-row { cursor: default; }
 .sched li.is-open .sched-more { grid-template-rows: 1fr; margin-top: -14px; }
 .sched li.is-open .sched-row i::after { rotate: 0deg; opacity: 0; }
 .sched li.is-open .sched-row span { translate: 6px 0; }
@@ -204,6 +207,31 @@ button.sched-row:focus-visible { outline: 2px solid var(--focus); outline-offset
 .creed-body > * + * { margin-top: var(--space-4); }
 .creed-body h4 { margin: var(--space-6) 0 0; font-weight: 700; font-size: 15px; line-height: 20px; text-transform: uppercase; color: var(--maroon); }
 .creed-refs { font-size: 14px; line-height: 22px; color: var(--text-muted); }
+
+/* Timeline: a thin line with a square at each entry. Used for Our story (dates, optional photos) and God's truth about us (numbered points). */
+[data-needs][hidden] { display: none !important; }
+.tl { list-style: none; margin: 0; padding: 0; position: relative; }
+.tl-item { position: relative; padding: 0 0 var(--space-12) var(--space-8); }
+.tl-item::before { content: ""; position: absolute; left: 0; top: 13px; z-index: 1; width: 9px; height: 9px; background: var(--maroon); }
+.tl-item::after { content: ""; position: absolute; left: 4px; top: 13px; bottom: -13px; width: 1px; background: var(--rule); }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-item:last-child::after { display: none; }
+.tl-when { font-family: var(--font-condensed); font-weight: 400; font-size: clamp(36px, 9vw, 48px); line-height: .9; text-transform: uppercase; color: var(--maroon); }
+.tl-text { margin-top: var(--space-2); max-width: 34em; font-weight: 600; }
+.tl-text p + p { margin-top: var(--space-3); }
+.tl-photo { aspect-ratio: 3 / 2; height: auto; max-width: 520px; margin-top: var(--space-4); }
+/* Our story: the line runs on past the last entry to an open square, ready for the next one */
+.tl-open { padding-bottom: 9px; }
+.tl-open .tl-item:last-child { padding-bottom: var(--space-12); }
+.tl-open .tl-item:last-child::after { display: block; bottom: 0; }
+.tl-open::after { content: ""; position: absolute; left: 0; bottom: 0; width: 9px; height: 9px; border: 1px solid var(--maroon); background: var(--surface); }
+/* God's truth about us: the points run down the line to the Bible study button */
+.tl-flow { max-width: var(--measure); }
+.tl-flow .tl-item { padding-bottom: var(--space-8); }
+.tl-flow h3 { margin: var(--space-1) 0 var(--space-2); }
+.tl-end { scroll-margin-top: 152px; }
+.tl-end::before { top: 20px; }
+.tl-end .lead { margin-top: var(--space-6); }
 
 /* Subpages: jump links under the header, condensed section titles */
 .jump { position: sticky; top: 64px; z-index: 30; background: var(--surface); border-bottom: 1px solid var(--rule); }
@@ -314,7 +342,13 @@ button.sched-row:focus-visible { outline: 2px solid var(--focus); outline-offset
 .seat-times { margin: var(--space-6) 0 var(--space-3); color: var(--maroon); white-space: normal; }
 .seat-card { background: var(--surface-raised); border: 1px solid var(--rule); padding: var(--space-6); }
 .seat-card .form { max-width: none; }
-.free-photo { aspect-ratio: 3 / 2; height: auto; max-width: 560px; }
+/* Free Bible: once a photo is added it fills the section like the Sundays photos, fading out at the top and bottom */
+.free-bg { position: absolute; inset: 0; z-index: -1; -webkit-mask-image: linear-gradient(180deg, transparent, #000 24%, #000 76%, transparent); mask-image: linear-gradient(180deg, transparent, #000 24%, #000 76%, transparent); }
+.free-bg[hidden] { display: none; }
+.free-bg img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; filter: grayscale(1) contrast(1.05); }
+.free-bg::after { content: ""; position: absolute; inset: 0; background: rgba(38, 36, 38, .74); }
+.block.free.has-photo { position: relative; isolation: isolate; border-top: 0; padding-block: clamp(128px, 20vw, 184px); color: var(--text); --text: #ecebe7; --text-strong: #f6f5f2; --maroon: #f6f5f2; --focus: #f6f5f2; }
+.block.free.has-photo + .block { border-top: 0; }
 .pastor-photo { aspect-ratio: 4 / 5; height: auto; max-width: 260px; margin-bottom: var(--space-4); }
 
 /* Subpages */
@@ -431,6 +465,18 @@ body:not(.has-hero) .foot-art { -webkit-mask-image: url("../assets/imagery/readi
   .nav-sub a:hover, .nav-sub a:focus-visible { color: var(--maroon); }
   .nav-sub a:hover .arr, .nav-sub a:focus-visible .arr { opacity: 1; translate: 0 0; }
   .story-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--space-16); align-items: start; }
+  /* Our story on a wide screen: the line runs down the middle, entries take turns either side, each photo opposite its text */
+  .tl-alt .tl-item { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--space-24); align-items: start; padding-left: 0; padding-bottom: var(--space-16); }
+  .tl-alt .tl-item::before { left: calc(50% - 4.5px); }
+  .tl-alt .tl-item::after { left: calc(50% - .5px); }
+  .tl-alt .tl-item:nth-child(odd) .tl-body { grid-column: 1; text-align: right; justify-self: end; }
+  .tl-alt .tl-item:nth-child(odd) .tl-photo { grid-column: 2; }
+  .tl-alt .tl-item:nth-child(even) .tl-body { grid-column: 2; grid-row: 1; }
+  .tl-alt .tl-item:nth-child(even) .tl-photo { grid-column: 1; grid-row: 1; justify-self: end; }
+  .tl-alt .tl-photo { width: 100%; max-width: 440px; margin-top: 0; }
+  .tl-alt.tl-open .tl-item:last-child { padding-bottom: var(--space-16); }
+  .tl-open.tl-alt::after { left: calc(50% - 4.5px); }
+  .tl-end { scroll-margin-top: 182px; }
   .pastors { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-16); }
   .jump { top: 80px; }
   body:not(.has-hero) .site-footer { padding-top: var(--space-24); }

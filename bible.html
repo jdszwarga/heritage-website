@@ -37,7 +37,8 @@
           <div class="wrap nav-panel-grid">
             <ul class="nav-sub">
               <li><a href="church.html#visit">Plan a visit <span class="arr" aria-hidden="true">&rarr;</span></a></li>
-              <li><a href="church.html#story">Our story <span class="arr" aria-hidden="true">&rarr;</span></a></li>
+              <li><a href="church.html#purpose">Our purpose <span class="arr" aria-hidden="true">&rarr;</span></a></li>
+              <li data-needs="story.timeline" hidden><a href="church.html#story">Our story <span class="arr" aria-hidden="true">&rarr;</span></a></li>
               <li><a href="church.html#pastors">Our pastors <span class="arr" aria-hidden="true">&rarr;</span></a></li>
               <li><a href="church.html#contact">Contact <span class="arr" aria-hidden="true">&rarr;</span></a></li>
             </ul>
@@ -59,7 +60,7 @@
       </div>
       <div class="nav-foot">
         <p class="times">Sundays <span data-c="sundays.times">10am &amp; 5pm</span></p>
-        <address><a href="https://www.google.com/maps/search/?api=1&amp;query=Matamata-Piako%20Civic%20%26%20Memorial%20Centre%2C%2011%20Tainui%20Street%2C%20Matamata%203400" data-map data-c-lines="contact.address">Matamata-Piako Civic &amp; Memorial Centre<br>11 Tainui Street, Matamata 3400</a></address>
+        <address><a href="https://www.google.com/maps/search/?api=1&amp;query=Heritage%20Baptist%20Church%2C%2011%20Tainui%20Street%2C%20Matamata%203400" data-map data-c-lines="contact.address">Matamata-Piako Civic &amp; Memorial Centre<br>11 Tainui Street, Matamata 3400</a></address>
         <a href="tel:+64273394078" data-c-phone="contact.phone" data-prefix="Call or text ">Call or text 027 339 4078</a>
         <a href="mailto:info@heritagebc.org.nz" data-c-email="contact.email">info@heritagebc.org.nz</a>
       </div>
@@ -79,46 +80,52 @@
 
   <section class="block" id="truth"><div class="wrap">
     <h2 class="sec-title reveal">God’s truth about us</h2>
-    <div class="hb-points">
-      <div class="hb-point reveal">
+    <ol class="tl tl-flow">
+      <li class="tl-item hb-point reveal">
+        <p class="tl-when" aria-hidden="true">1</p>
         <h3 data-c="truth.1.title">All of us know that God is real</h3>
         <div data-c-verses="truth.1.verses"><p class="hb-scripture">“For the invisible things of him from the creation of the world are clearly seen, being understood by the things that are made...so that they are without excuse.” <cite>- Romans 1:20</cite></p></div>
-      </div>
-      <div class="hb-point reveal">
+      </li>
+      <li class="tl-item hb-point reveal">
+        <p class="tl-when" aria-hidden="true">2</p>
         <h3 data-c="truth.2.title">All of us are guilty before God</h3>
         <div data-c-verses="truth.2.verses"><p class="hb-scripture">“They glorified him not as God, neither were thankful; but became vain in their imaginations, and their foolish heart was darkened. Professing themselves to be wise, they became fools.” <cite>- Romans 1:21-22</cite></p><p class="hb-scripture">“There is none righteous, no, not one...Whose mouth is full of cursing and bitterness...And the way of peace have they not known: There is no fear of God before their eyes.” <cite>- Romans 3:10-18</cite></p></div>
-      </div>
-      <div class="hb-point reveal">
+      </li>
+      <li class="tl-item hb-point reveal">
+        <p class="tl-when" aria-hidden="true">3</p>
         <h3 data-c="truth.3.title">All of us must pay for this great sin</h3>
         <div data-c-verses="truth.3.verses"><p class="hb-scripture">“For the wages of sin is death...And death and hell were cast into the lake of fire. This is the second death.” <cite>- Romans 6:23 &amp; Revelation 20:14</cite></p></div>
-      </div>
-      <div class="hb-point reveal">
+      </li>
+      <li class="tl-item hb-point reveal">
+        <p class="tl-when" aria-hidden="true">4</p>
         <h3 data-c="truth.4.title">None of us can earn God’s forgiveness</h3>
         <div data-c-verses="truth.4.verses"><p class="hb-scripture">“Therefore by the deeds of the law there shall no flesh be justified in his sight.” <cite>- Romans 3:20</cite></p><p class="hb-scripture">“For by grace are ye saved through faith; and that not of yourselves: it is the gift of God: Not of works, lest any man should boast.” <cite>- Ephesians 2:8-9</cite></p></div>
-      </div>
-      <div class="hb-point reveal">
+      </li>
+      <li class="tl-item hb-point reveal">
+        <p class="tl-when" aria-hidden="true">5</p>
         <h3 data-c="truth.5.title">All of us have a way to God’s forgiveness</h3>
         <div data-c-verses="truth.5.verses"><p class="hb-scripture">“Even the righteousness of God which is by faith of Jesus Christ unto all and upon all them that believe.” <cite>- Romans 3:22</cite></p><p class="hb-scripture">“For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.” <cite>- John 3:16</cite></p></div>
-      </div>
-      <div class="hb-point reveal">
+      </li>
+      <li class="tl-item hb-point reveal">
+        <p class="tl-when" aria-hidden="true">6</p>
         <h3 data-c="truth.6.title">All of us must come to God through Jesus</h3>
         <div data-c-verses="truth.6.verses"><p class="hb-scripture">“That if thou shalt confess with thy mouth the Lord Jesus, and shalt believe in thine heart that God hath raised him from the dead, thou shalt be saved.” <cite>- Romans 10:9</cite></p><p class="hb-scripture">“Jesus saith unto him, I am the way, the truth, and the life: no man cometh unto the Father, but by me.” <cite>- John 14:6</cite></p></div>
-      </div>
-    </div>
+      </li>
+      <li class="tl-item tl-end reveal" id="study">
+        <h2 class="sr-only">Request a Bible study</h2>
+        <a class="hb-button" href="church.html#contact" data-open-study>Request a Bible study with one of our pastors <span class="arr" aria-hidden="true">&rarr;</span></a>
+        <p class="lead" data-c-linkphones="study.note">Or text Pastor Josh <a href="sms:+64273394078">027 339 4078</a> or Pastor Lim <a href="sms:+642102954744">021 0295 4744</a> to get a cuppa or to learn more about God’s gift of forgiveness.</p>
+      </li>
+    </ol>
   </div></section>
 
-  <section class="block block-join" id="study"><div class="wrap">
-    <h2 class="sr-only">Request a Bible study</h2>
-    <div class="reveal"><a class="hb-button" href="church.html#contact" data-open-study>Request a Bible study with one of our pastors <span class="arr" aria-hidden="true">&rarr;</span></a></div>
-    <p class="lead reveal" data-c-linkphones="study.note">Or text Pastor Josh <a href="sms:+64273394078">027 339 4078</a> or Pastor Lim <a href="sms:+642102954744">021 0295 4744</a> to get a cuppa or to learn more about God’s gift of forgiveness.</p>
-  </div></section>
-
-  <section class="block" id="free-bible"><div class="wrap">
+  <section class="block free" id="free-bible">
+    <div class="free-bg" hidden><img alt="" data-c-img="img.freebible"></div>
+    <div class="wrap">
     <h2 class="sec-title reveal">Free Bible</h2>
     <p class="lead reveal" data-c="freebible.body">Our Bible stands around Matamata hold free King James New Testaments. Take one, or ask and we will post one to you.</p>
-    <div class="hb-frame free-photo" hidden><img alt="A Bible stand holding free New Testaments" loading="lazy" data-c-img="img.freebible"></div>
     <div class="reveal"><a class="hb-button" href="church.html#contact" data-open-testament>Request a free Bible <span class="arr" aria-hidden="true">&rarr;</span></a></div>
-  </section>
+  </div></section>
 
   <section class="block" id="believe"><div class="wrap">
     <h2 class="sec-title reveal">What we believe</h2>
@@ -192,7 +199,8 @@
           <h2><a href="church.html">Our Church</a></h2>
           <ul>
             <li><a href="seat.html" data-open-visit>Plan a visit</a></li>
-            <li><a href="church.html#story">Our story</a></li>
+            <li><a href="church.html#purpose">Our purpose</a></li>
+            <li data-needs="story.timeline" hidden><a href="church.html#story">Our story</a></li>
             <li><a href="church.html#pastors">Our pastors</a></li>
           </ul>
         </div>
@@ -251,7 +259,7 @@
       <h2 class="hs-title hs-title-sm" id="visit-title">Plan a visit</h2>
       <button class="study-close" type="button" aria-label="Close" data-close-dialog>&times;</button>
     </div>
-    <address class="visit-where"><a href="https://www.google.com/maps/search/?api=1&amp;query=Matamata-Piako%20Civic%20%26%20Memorial%20Centre%2C%2011%20Tainui%20Street%2C%20Matamata%203400" data-map data-c-lines="contact.address">Matamata-Piako Civic &amp; Memorial Centre<br>11 Tainui Street, Matamata 3400</a></address>
+    <address class="visit-where"><a href="https://www.google.com/maps/search/?api=1&amp;query=Heritage%20Baptist%20Church%2C%2011%20Tainui%20Street%2C%20Matamata%203400" data-map data-c-lines="contact.address">Matamata-Piako Civic &amp; Memorial Centre<br>11 Tainui Street, Matamata 3400</a></address>
     <form class="form" data-form="visit">
       <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
       <fieldset class="choice">
