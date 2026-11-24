@@ -223,7 +223,7 @@
         p_service_date: kind === 'visit' && when && /^\d{4}-\d\d-\d\d$/.test(when.value) ? when.value : null,
         p_party_size: kind === 'visit' ? (parseInt(val('count'), 10) || 1) : null,
         p_wants_reminder: !!(form.elements.reminder && form.elements.reminder.checked),
-        p_source: location.pathname.split('/').pop() || 'index.html',
+        p_source: (location.pathname.split('/').pop() || 'index').replace(/\.html$/, ''),
         p_website: val('website')
       };
       if (!cfg.url) { note.textContent = 'This form is not connected yet.'; return; }
@@ -279,7 +279,7 @@
         body.appendChild(text);
         // Optional link under the text. Other sites open in a new tab; pages of this site open in place.
         var to = String(h.link || '').trim();
-        if (/^(https?:\/\/|mailto:|tel:|#|[\w-]+\.html)/i.test(to)) {
+        if (/^(https?:\/\/|mailto:|tel:|#|\/|(church|bible|seat)(\.html)?(#|$)|[\w-]+\.html)/i.test(to)) {
           var a = make('a', 'tl-link', String(h.linkText || '').trim() || 'Learn more');
           a.href = to;
           if (/^https?:/i.test(to)) { a.target = '_blank'; a.rel = 'noopener'; }
@@ -292,7 +292,7 @@
         if (/^(https:\/\/|assets\/)/.test(h.img || '')) {
           var frame = make('div', 'hb-frame tl-photo', '');
           var img = document.createElement('img');
-          img.alt = ''; img.loading = 'lazy'; img.src = h.img;
+          img.alt = String(h.alt || '').trim(); img.loading = 'lazy'; img.src = h.img;
           frame.appendChild(img);
           li.appendChild(frame);
         }
@@ -310,8 +310,11 @@
     each('data-c-lines', function (el, v) {
       el.textContent = '';
       lines(v).forEach(function (l, i) { if (i) el.appendChild(document.createElement('br')); el.appendChild(document.createTextNode(l)); });
-      // The map link opens the church's own Google profile: its name with the street address (the venue's name is left out)
-      if (el.hasAttribute('data-map')) el.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(['Heritage Baptist Church'].concat(lines(v).length > 1 ? lines(v).slice(1) : lines(v)).join(', '));
+      // The map link opens the church's own Google profile: its name with the street address (the line with a number in it)
+      if (el.hasAttribute('data-map')) {
+        var street = lines(v).filter(function (l) { return /\d/.test(l); });
+        el.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(['Heritage Baptist Church'].concat(street.length ? street : lines(v).slice(-1)).join(', '));
+      }
     });
     each('data-c-paras', function (el, v) {
       el.textContent = '';
@@ -351,8 +354,25 @@
       var frame = el.closest('[hidden]'); if (frame) frame.hidden = false;
       var sec = el.closest('.free'); if (sec) sec.classList.add('has-photo');
     });
+    // Each photo's description (for screen readers and search engines) is kept beside it, under the photo's key plus .alt
+    document.querySelectorAll('[data-c-img]').forEach(function (el) {
+      var v = map[el.getAttribute('data-c-img') + '.alt'];
+      if (typeof v === 'string' && v.trim() !== '') el.alt = v.trim();
+    });
+    // Social links: shown once they have an address. Each one also goes into the church's details for search engines.
+    each('data-c-href', function (el, v) {
+      if (!/^https:\/\//.test(v)) return;
+      el.href = v; el.hidden = false;
+      var ld = document.querySelector('script[type="application/ld+json"]');
+      if (!ld) return;
+      try {
+        var data = JSON.parse(ld.textContent);
+        data.sameAs = (data.sameAs || []).filter(function (u) { return u !== v; }).concat(v);
+        ld.textContent = JSON.stringify(data);
+      } catch (err) { /* leave the details as they are */ }
+    });
   }
-  if (cfg.url && document.querySelector('[data-c],[data-c-lines],[data-c-paras],[data-c-verses],[data-c-linkphones],[data-c-phone],[data-c-email],[data-c-img],[data-c-timeline],[data-needs]')) {
+  if (cfg.url && document.querySelector('[data-c],[data-c-lines],[data-c-paras],[data-c-verses],[data-c-linkphones],[data-c-phone],[data-c-email],[data-c-img],[data-c-href],[data-c-timeline],[data-needs]')) {
     try { var kept = JSON.parse(localStorage.getItem('hbc-content') || 'null'); if (kept) applyContent(kept); } catch (err) { /* no saved copy */ }
     api('web_content?select=key,value').then(function (r) { return r.ok ? r.json() : []; }).then(function (rows) {
       var map = {};

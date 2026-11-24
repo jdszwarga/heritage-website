@@ -3,10 +3,10 @@
 Run from the project folder:   python tools/build.py
 
 index.html is the source for the shared parts. This script writes church.html, bible.html
-and seat.html, and js/content-fields.js (the list of fields the admin page can edit, with
+and seat.html, 404.html, home.html, sitemap.xml, and js/content-fields.js (the list of fields the admin page can edit, with
 the wording each one starts with). Edit wording here or in index.html, then run it again.
 """
-import io, json, html, re, os, sys
+import io, json, html, re, os, sys, subprocess, datetime
 
 root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 src = io.open(root + "/index.html", encoding="utf-8").read()
@@ -20,16 +20,22 @@ FIELDS = []
 SITE = "https://www.heritagebc.org.nz/"  # the address the finished site will live at
 
 
-def field(group, key, label, value, kind="text", hint=""):
-    FIELDS.append({"group": group, "key": key, "label": label, "type": kind, "value": value, "hint": hint})
+def field(group, key, label, value, kind="text", hint="", alt=None):
+    f = {"group": group, "key": key, "label": label, "type": kind, "value": value, "hint": hint}
+    if kind == "image":
+        # Every photo has a description, read out by screen readers and used by search engines. Saved under the key plus .alt
+        f["alt"] = alt or ""
+    FIELDS.append(f)
 
 
-def page(fname, title, desc, body, robots=None):
+def page(fname, title, desc, body, robots=None, base=None):
+    # Pages are saved as name.html but known by their address without .html (GitHub Pages serves /church from church.html)
+    slug = fname[:-5]
     full = "%s | Heritage Baptist Church Matamata" % title
     t = re.sub(r"<title>.*?</title>", lambda m: "<title>%s</title>" % full, top, 1)
     for tag, value in (('<meta name="description" content="', desc), ('<meta property="og:description" content="', desc),
-                       ('<meta property="og:title" content="', full), ('<link rel="canonical" href="', SITE + fname),
-                       ('<meta property="og:url" content="', SITE + fname)):
+                       ('<meta property="og:title" content="', full), ('<link rel="canonical" href="', SITE + slug),
+                       ('<meta property="og:url" content="', SITE + slug)):
         start = t.index(tag) + len(tag)
         end = t.index('"', start)
         t = t[:start] + value + t[end:]
@@ -38,8 +44,12 @@ def page(fname, title, desc, body, robots=None):
     t = t[:a] + t[b:]
     if robots:
         t = t.replace('<meta name="viewport"', '<meta name="robots" content="%s">\n<meta name="viewport"' % robots, 1)
-    t = t.replace('<a class="nav-top" href="%s">' % fname, '<a class="nav-top" href="%s" aria-current="page">' % fname, 1)
-    io.open(root + "/" + fname, "w", encoding="utf-8", newline="\n").write(t + '<main id="main">\n' + body + "\n</main>" + bottom)
+    t = t.replace('<a class="nav-top" href="%s">' % slug, '<a class="nav-top" href="%s" aria-current="page">' % slug, 1)
+    out = t + '<main id="main">\n' + body + "\n</main>" + bottom
+    if base:
+        # The not-found page can be shown at any address, so its links and files point from the site's root
+        out = re.sub(r'(?<=\s)(href|src)="(?!https?:|mailto:|tel:|sms:|#|/)', r'\1="' + base, out)
+    io.open(root + "/" + fname, "w", encoding="utf-8", newline="\n").write(out)
 
 
 def paras_html(text):
@@ -78,6 +88,8 @@ field(G, "contact.address", "Where we meet", "Matamata-Piako Civic & Memorial Ce
 field(G, "footer.times", "Service times in the footer", "Sundays 10am & 5pm\nThursday prayer meeting 7pm", "long", "One line per row.")
 field(G, "contact.phone", "Phone number", "027 339 4078")
 field(G, "contact.email", "Email address", "info@heritagebc.org.nz")
+field(G, "contact.facebook", "Facebook page link", "", "text", "Optional. The full address, starting https://www.facebook.com/. The Facebook icon in the footer appears once this is filled in.")
+field(G, "contact.youtube", "YouTube channel link", "https://www.youtube.com/@HBCMatamata")
 G = "Sunday schedule"
 for n, (t, title, det) in enumerate([
     ("10AM", "Bible study", "Sunday school for kids\nBible study for intermediates"),
@@ -89,10 +101,11 @@ for n, (t, title, det) in enumerate([
     field(G, "sched.%d.details" % n, "Row %d details" % n, det or "", "long",
           "Shown when the row is opened. One line per row." + ("" if det else " Optional: leave blank and the row does not open."))
 G = "Home page"
+field(G, "home.app_tagline", "Church app tagline", "Upcoming events, upgraded sermon archives, serving tools")
 field(G, "home.verse", "Verse", "“Search the scriptures; for in them ye think ye have eternal life: and they are they which testify of me.”", "long")
 field(G, "home.verse_ref", "Verse reference", "John 5:39")
-field(G, "img.sundays_family", "Sundays photo: church family", "assets/imagery/group-crop.jpg", "image")
-field(G, "img.sundays_service", "Sundays photo: service", "assets/imagery/service-band.jpg", "image")
+field(G, "img.sundays_family", "Sundays photo: church family", "assets/imagery/group-crop.jpg", "image", alt="Members of the church family standing together, smiling")
+field(G, "img.sundays_service", "Sundays photo: service", "assets/imagery/service-band.jpg", "image", alt="A Sunday service at Heritage Baptist Church in Matamata")
 
 # ---------------- content first pulled from the old site, saved in content/current-site.json ----------------
 items = json.load(io.open(root + "/content/current-site.json", encoding="utf-8"))
@@ -118,11 +131,11 @@ field(G, "visit.body", "What a visit is like", VISIT_BODY, "long", "One paragrap
 G = "Our purpose"
 purpose = "\n".join(x for t, x in items[: find("h1", "Our Purpose")] if t == "p" and x.startswith("The "))
 field(G, "purpose.body", "Our purpose", purpose, "long", "One paragraph per line.")
-field(G, "img.story", "Our purpose photo", "assets/imagery/group-crop.jpg", "image")
+field(G, "img.story", "Our purpose photo", "assets/imagery/group-crop.jpg", "image", alt="Members of the church family standing together, smiling")
 
 G = "Our story"
 field(G, "story.timeline", "Highlights", "", "timeline",
-      "Oldest first. Each highlight has a date, a line or two of text and, if you like, a link and one photo. A link with no link text shows as Learn more. The Our story section and its menu links appear once there is at least one highlight.")
+      "Oldest first. Each highlight has a date, a line or two of text and, if you like, a link and one photo with a short description of it. A link with no link text shows as Learn more. The Our story section and its menu links appear once there is at least one highlight.")
 
 G = "Our pastors"
 pastors_html = []
@@ -237,7 +250,7 @@ page("church.html", "Our Church", "Visit Heritage Baptist Church in Matamata. Wh
         <p class="visit-thursday" data-c="visit.thursday">""" + E(VISIT_THURSDAY) + """</p>
         <address class="label" style="margin-top:var(--space-4)" data-c-lines="contact.address">Matamata-Piako Civic &amp; Memorial Centre<br>11 Tainui Street, Matamata 3400</address>
       </div>
-      <div><a class="hb-button" href="seat.html" data-open-visit>Plan a visit """ + ARR + """</a></div>
+      <div><a class="hb-button" href="seat" data-open-visit>Plan a visit """ + ARR + """</a></div>
     </div>
     <div class="prose reveal" data-c-paras="visit.body">""" + paras_html(VISIT_BODY) + """</div>
   </div></section>
@@ -294,7 +307,7 @@ page("bible.html", "The Bible", "Get a free Bible in Matamata. Free King James N
 """ + truth_html + """
       <li class="tl-item tl-end reveal" id="study">
         <h2 class="sr-only">Request a Bible study</h2>
-        <a class="hb-button" href="church.html#contact" data-open-study>Request a Bible study with one of our pastors """ + ARR + """</a>
+        <a class="hb-button" href="church#contact" data-open-study>Request a Bible study with one of our pastors """ + ARR + """</a>
         <p class="lead" data-c-linkphones="study.note">""" + linkphones_html(STUDY_NOTE) + """</p>
       </li>
     </ol>
@@ -305,7 +318,7 @@ page("bible.html", "The Bible", "Get a free Bible in Matamata. Free King James N
     <div class="wrap">
     <h2 class="sec-title reveal">Free Bible</h2>
     <p class="lead reveal" data-c="freebible.body">""" + E(FREE_BIBLE) + """</p>
-    <div class="reveal"><a class="hb-button" href="church.html#contact" data-open-testament>Request a free Bible """ + ARR + """</a></div>
+    <div class="reveal"><a class="hb-button" href="church#contact" data-open-testament>Request a free Bible """ + ARR + """</a></div>
   </div></section>
 
   <section class="block" id="believe"><div class="wrap">
@@ -333,12 +346,43 @@ page("seat.html", "Save a seat", "Tell us you are coming on Sunday and we will s
   </div></section>
 """, robots="noindex")
 
+# Not found: GitHub Pages shows 404.html for any address that has no page
+page("404.html", "Page not found", "This page could not be found. Visit Heritage Baptist Church in Matamata.", """
+  <section class="block notfound"><div class="wrap">
+    <h1 class="sec-title">Page not found</h1>
+    <p class="lead">This page has moved or no longer exists.</p>
+    <ul class="notfound-links">
+      <li><a class="hb-button" href="/">Home """ + ARR + """</a></li>
+      <li><a class="hb-button hb-quiet" href="church">Our Church</a></li>
+      <li><a class="hb-button hb-quiet" href="bible">The Bible</a></li>
+    </ul>
+  </div></section>
+""", robots="noindex", base="/")
+
+# The old site's home address (/home), still known to search engines, goes to the home page
+io.open(root + "/home.html", "w", encoding="utf-8", newline="\n").write(
+    '<!doctype html>\n<html lang="en-NZ">\n<head>\n<meta charset="utf-8">\n<title>Heritage Baptist Church</title>\n'
+    '<link rel="canonical" href="%s">\n<meta http-equiv="refresh" content="0; url=/">\n'
+    '<script>location.replace("/" + location.hash)</script>\n</head>\n<body><p><a href="/">Heritage Baptist Church</a></p></body>\n</html>\n' % SITE)
+
+
+def lastmod(fname):
+    """The date a page last changed: today if it has changes not yet committed, otherwise its last commit."""
+    try:
+        dirty = subprocess.run(["git", "status", "--porcelain", "--", fname], cwd=root, capture_output=True, text=True).stdout.strip()
+        when = subprocess.run(["git", "log", "-1", "--format=%cs", "--", fname], cwd=root, capture_output=True, text=True).stdout.strip()
+    except OSError:
+        dirty, when = "", ""
+    return when if when and not dirty else datetime.date.today().isoformat()
+
+
 io.open(root + "/js/content-fields.js", "w", encoding="utf-8", newline="\n").write(
     "// Written by tools/build.py. The fields the admin page can edit, with the wording each starts with.\nwindow.HBC_FIELDS = "
     + json.dumps(FIELDS, ensure_ascii=False, indent=1) + ";\n")
 # For search engines: the list of pages, and where to find it
 io.open(root + "/sitemap.xml", "w", encoding="utf-8", newline="\n").write(
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-    + "".join("  <url><loc>%s%s</loc></url>\n" % (SITE, f) for f in ("", "church.html", "bible.html")) + "</urlset>\n")
+    + "".join("  <url><loc>%s%s</loc><lastmod>%s</lastmod></url>\n" % (SITE, f, lastmod((f or "index") + ".html")) for f in ("", "church", "bible"))
+    + "</urlset>\n")
 io.open(root + "/robots.txt", "w", encoding="utf-8", newline="\n").write("User-agent: *\nAllow: /\n\nSitemap: %ssitemap.xml\n" % SITE)
-print("built church.html, bible.html, seat.html and js/content-fields.js (%d editable fields)" % len(FIELDS))
+print("built church.html, bible.html, seat.html, 404.html, home.html, sitemap.xml and js/content-fields.js (%d editable fields)" % len(FIELDS))

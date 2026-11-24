@@ -144,6 +144,7 @@ html:not(.nav-open) .has-hero .site-header:not(.is-scrolled) { background: trans
 .sundays-title { font-family: var(--font-serif); font-weight: 500; font-size: clamp(72px, 19vw, 168px); line-height: .86; letter-spacing: -0.03em; color: var(--text-strong); }
 .times { margin-top: var(--space-4); font-family: var(--font-condensed); color: var(--maroon); font-size: clamp(52px, 13vw, 96px); line-height: .9; text-transform: uppercase; white-space: nowrap; }
 .sundays .lead { margin-top: var(--space-6); }
+
 .sundays address { margin-top: var(--space-6); font-style: normal; color: var(--text-strong); }
 
 .sched { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
@@ -179,6 +180,8 @@ button.sched-row:focus-visible { outline: 2px solid var(--focus); outline-offset
 .more-item + .more-item { border-top: 1px solid rgba(244, 242, 239, .28); }
 .more-icon { width: 56px; height: 56px; transition: scale .45s cubic-bezier(.2, .7, .2, 1); }
 .more-title { font-family: var(--font-serif); font-weight: 500; font-size: clamp(26px, 6.2vw, 40px); line-height: 1.08; letter-spacing: -0.01em; }
+.more-text { display: grid; gap: var(--space-1); }
+.more-sub { font-family: var(--font-serif); font-weight: 400; font-size: clamp(18px, 4vw, 21px); line-height: 1.35; opacity: .85; }
 .more-item .arr { font-size: 28px; transition: translate .45s cubic-bezier(.2, .7, .2, 1); }
 .more-item:hover .arr { translate: 8px 0; }
 .more-item:hover .more-icon { scale: 1.08; }
@@ -350,9 +353,14 @@ button.sched-row:focus-visible { outline: 2px solid var(--focus); outline-offset
 .free-bg { position: absolute; inset: 0; z-index: -1; -webkit-mask-image: linear-gradient(180deg, transparent, #000 24%, #000 76%, transparent); mask-image: linear-gradient(180deg, transparent, #000 24%, #000 76%, transparent); }
 .free-bg[hidden] { display: none; }
 .free-bg img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; filter: grayscale(1) contrast(1.05); }
+/* On phones the photo is cropped to its right-hand side */
+@media (max-width: 639px) { .free-bg img { object-position: 100% 60%; } }
 .free-bg::after { content: ""; position: absolute; inset: 0; background: rgba(38, 36, 38, .74); }
 .block.free.has-photo { position: relative; isolation: isolate; border-top: 0; padding-block: clamp(128px, 20vw, 184px); color: var(--text); --text: #ecebe7; --text-strong: #f6f5f2; --maroon: #f6f5f2; --focus: #f6f5f2; }
 .block.free.has-photo + .block { border-top: 0; }
+.notfound { padding-block: var(--space-16) var(--space-24); }
+.notfound .lead { margin-top: var(--space-4); }
+.notfound-links { list-style: none; margin: var(--space-8) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-4); }
 .pastor-photo { aspect-ratio: 4 / 5; height: auto; max-width: 260px; margin-bottom: var(--space-4); }
 
 /* Subpages */
@@ -381,6 +389,11 @@ body:not(.has-hero) .foot-art { -webkit-mask-image: url("../assets/imagery/readi
 .foot-links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2) var(--space-8); }
 .foot-contact a { color: var(--text-strong); font-weight: 700; text-decoration-color: var(--rule); }
 .foot-contact a:hover { text-decoration-color: currentColor; }
+.foot-social { display: flex; justify-content: center; gap: var(--space-4); margin-top: var(--space-2); }
+.foot-social a { display: grid; place-items: center; width: 44px; height: 44px; color: var(--text-strong); transition: color .2s, scale .3s cubic-bezier(.2, .7, .2, 1); }
+.foot-social a[hidden] { display: none; }
+.foot-social a:hover { color: var(--maroon); scale: 1.08; }
+.foot-social svg { width: 28px; height: 28px; fill: currentColor; }
 .foot-cols[hidden] { display: none; }
 .foot-top { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }
 .foot-col h2 a { font: inherit; color: inherit; background: none; padding: 0; }
@@ -444,6 +457,7 @@ body:not(.has-hero) .foot-art { -webkit-mask-image: url("../assets/imagery/readi
   .foot-brand img { height: 64px; }
   .foot-contact { justify-items: end; }
   .foot-links { justify-content: flex-end; }
+  .foot-social { justify-content: flex-end; margin-right: -8px; }
   /* Desktop: a small dropdown under each heading */
   .site-nav { display: flex; align-items: stretch; align-self: stretch; gap: var(--space-8); }
   .nav-group { position: relative; display: flex; align-items: center; }

@@ -194,16 +194,32 @@
             input.type = 'file';
             input.accept = 'image/jpeg,image/png,image/webp';
             input.id = id;
+            // The photo's description: read out by screen readers and used by search engines
+            var altStart = tidy(saved[f.key + '.alt'] != null ? saved[f.key + '.alt'] : (f.alt || ''));
+            var alt = el('input');
+            alt.id = id + '-alt';
+            alt.value = altStart;
+            alt.placeholder = 'Describe the photo, for example: Church family sharing lunch after the service';
+            var altLabel = el('label', 'adm-alt-label', 'Photo description');
+            altLabel.htmlFor = alt.id;
+            var pic = { f: f, input: input, alt: alt, altStart: altStart, wrap: wrap, start: start, image: true };
+            function changed() { wrap.classList.toggle('is-changed', !!input.files[0] || tidy(alt.value) !== pic.altStart); }
             input.addEventListener('change', function () {
               if (!input.files[0]) return;
               img.src = URL.createObjectURL(input.files[0]);
               img.hidden = false;
-              wrap.classList.add('is-changed');
+              // A new photo needs its own description: the old one described the old photo
+              alt.value = '';
+              alt.focus();
+              changed();
             });
+            alt.addEventListener('input', changed);
             row.appendChild(img);
             row.appendChild(input);
             wrap.appendChild(row);
-            inputs.push({ f: f, input: input, wrap: wrap, start: start, image: true });
+            wrap.appendChild(altLabel);
+            wrap.appendChild(alt);
+            inputs.push(pic);
           } else {
             input = el(f.type === 'long' ? 'textarea' : 'input');
             input.id = id;
@@ -270,12 +286,12 @@
     var list = [];
     try { list = JSON.parse(saved || '[]'); } catch (err) { list = []; }
     if (!Array.isArray(list)) list = [];
-    var entries = list.map(function (h) { return { date: h.date || '', text: h.text || '', img: h.img || '', linkText: h.linkText || '', link: h.link || '', file: null }; });
+    var entries = list.map(function (h) { return { date: h.date || '', text: h.text || '', img: h.img || '', alt: h.alt || '', linkText: h.linkText || '', link: h.link || '', file: null }; });
     var box = el('div', 'adm-tl');
     var item = { f: f, timeline: true, wrap: wrap, start: JSON.stringify(entries.map(plain)) };
     // A web address typed without https:// gets it added, so the link does not point inside this site by mistake
-    function address(v) { v = tidy(v); return v && !/^(https?:\/\/|mailto:|tel:|#|[\w-]+\.html)/i.test(v) ? 'https://' + v : v; }
-    function plain(e) { return { date: tidy(e.date), text: tidy(e.text), img: e.img, linkText: tidy(e.linkText), link: address(e.link) }; }
+    function address(v) { v = tidy(v); return v && !/^(https?:\/\/|mailto:|tel:|#|\/|(church|bible|seat)(\.html)?(#|$)|[\w-]+\.html)/i.test(v) ? 'https://' + v : v; }
+    function plain(e) { return { date: tidy(e.date), text: tidy(e.text), img: e.img, alt: e.img || e.file ? tidy(e.alt) : '', linkText: tidy(e.linkText), link: address(e.link) }; }
     function kept() { return entries.filter(function (e) { return tidy(e.date) || tidy(e.text); }); }
     function touched() {
       var dirty = entries.some(function (e) { return e.file; }) || JSON.stringify(kept().map(plain)) !== item.start;
@@ -349,19 +365,28 @@
           if (!file.files[0]) return;
           e.file = file.files[0];
           img.src = URL.createObjectURL(e.file); img.hidden = false; clear.hidden = false;
+          // A new photo needs its own description
+          e.alt = ''; alt.value = ''; alt.hidden = false; alt.focus();
           touched();
         });
-        clear.addEventListener('click', function () { e.file = null; e.img = ''; file.value = ''; img.hidden = true; clear.hidden = true; touched(); });
+        var alt = el('input');
+        alt.placeholder = 'Photo description, for example: Pastors praying at the ordination';
+        alt.value = e.alt;
+        alt.hidden = !(e.file || e.img);
+        alt.setAttribute('aria-label', 'Highlight ' + (i + 1) + ' photo description');
+        alt.addEventListener('input', function () { e.alt = alt.value; touched(); });
+        clear.addEventListener('click', function () { e.file = null; e.img = ''; e.alt = ''; alt.value = ''; file.value = ''; img.hidden = true; clear.hidden = true; alt.hidden = true; touched(); });
         photo.appendChild(img);
         photo.appendChild(file);
         photo.appendChild(clear);
         row.appendChild(photo);
+        row.appendChild(alt);
         box.appendChild(row);
       });
       var add = el('button', 'adm-chip', 'Add highlight');
       add.type = 'button';
       add.addEventListener('click', function () {
-        entries.push({ date: '', text: '', img: '', linkText: '', link: '', file: null });
+        entries.push({ date: '', text: '', img: '', alt: '', linkText: '', link: '', file: null });
         draw();
         var rows = box.querySelectorAll('.adm-tl-item');
         rows[rows.length - 1].querySelector('input').focus();
@@ -370,6 +395,7 @@
       box.querySelectorAll('textarea').forEach(grow);
     }
     // Uploads any new photos, then gives back the list as it should be saved
+    item.missingAlt = function () { return kept().some(function (e) { return (e.file || e.img) && !tidy(e.alt); }); };
     item.collect = function () {
       return Promise.all(kept().map(function (e) {
         if (!e.file) return null;
@@ -382,6 +408,16 @@
   }
 
   function saveGroup(inputs, btn, said) {
+    var bare = inputs.filter(function (it) {
+      if (it.timeline) return it.missingAlt();
+      return it.image && (it.input.files[0] || it.start) && !tidy(it.alt.value);
+    });
+    if (bare.length) {
+      said.textContent = 'Add a photo description first. Say in a few words what the photo shows.';
+      var first = bare[0].alt || bare[0].wrap.querySelector('.adm-tl-item input[aria-label$="photo description"]:not([hidden])');
+      if (first && !first.value) first.focus();
+      return;
+    }
     btn.disabled = true;
     said.textContent = 'Saving…';
     var rows = [], uploads = [], removals = [];
@@ -394,7 +430,9 @@
           it.wrap.classList.remove('is-changed');
         }));
       } else if (it.image) {
-        if (!it.input.files[0]) return;
+        var altNow = tidy(it.alt.value);
+        if (it.input.files[0] || altNow !== it.altStart) { rows.push({ key: it.f.key + '.alt', value: altNow }); it.altStart = altNow; }
+        if (!it.input.files[0]) { it.wrap.classList.remove('is-changed'); return; }
         uploads.push(putPhoto(it.f.key, it.input.files[0]).then(function (url) {
           rows.push({ key: it.f.key, value: url });
           it.start = url; it.input.value = ''; it.wrap.classList.remove('is-changed');

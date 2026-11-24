@@ -41,6 +41,22 @@ window.HBC_FIELDS = [
   "hint": ""
  },
  {
+  "group": "Sundays and contact",
+  "key": "contact.facebook",
+  "label": "Facebook page link",
+  "type": "text",
+  "value": "",
+  "hint": "Optional. The full address, starting https://www.facebook.com/. The Facebook icon in the footer appears once this is filled in."
+ },
+ {
+  "group": "Sundays and contact",
+  "key": "contact.youtube",
+  "label": "YouTube channel link",
+  "type": "text",
+  "value": "https://www.youtube.com/@HBCMatamata",
+  "hint": ""
+ },
+ {
   "group": "Sunday schedule",
   "key": "sched.1.time",
   "label": "Row 1 time",
@@ -138,6 +154,14 @@ window.HBC_FIELDS = [
  },
  {
   "group": "Home page",
+  "key": "home.app_tagline",
+  "label": "Church app tagline",
+  "type": "text",
+  "value": "Upcoming events, upgraded sermon archives, serving tools",
+  "hint": ""
+ },
+ {
+  "group": "Home page",
   "key": "home.verse",
   "label": "Verse",
   "type": "long",
@@ -158,7 +182,8 @@ window.HBC_FIELDS = [
   "label": "Sundays photo: church family",
   "type": "image",
   "value": "assets/imagery/group-crop.jpg",
-  "hint": ""
+  "hint": "",
+  "alt": "Members of the church family standing together, smiling"
  },
  {
   "group": "Home page",
@@ -166,7 +191,8 @@ window.HBC_FIELDS = [
   "label": "Sundays photo: service",
   "type": "image",
   "value": "assets/imagery/service-band.jpg",
-  "hint": ""
+  "hint": "",
+  "alt": "A Sunday service at Heritage Baptist Church in Matamata"
  },
  {
   "group": "Plan a visit",
@@ -198,7 +224,8 @@ window.HBC_FIELDS = [
   "label": "Our purpose photo",
   "type": "image",
   "value": "assets/imagery/group-crop.jpg",
-  "hint": ""
+  "hint": "",
+  "alt": "Members of the church family standing together, smiling"
  },
  {
   "group": "Our story",
@@ -206,7 +233,7 @@ window.HBC_FIELDS = [
   "label": "Highlights",
   "type": "timeline",
   "value": "",
-  "hint": "Oldest first. Each highlight has a date, a line or two of text and, if you like, a link and one photo. A link with no link text shows as Learn more. The Our story section and its menu links appear once there is at least one highlight."
+  "hint": "Oldest first. Each highlight has a date, a line or two of text and, if you like, a link and one photo with a short description of it. A link with no link text shows as Learn more. The Our story section and its menu links appear once there is at least one highlight."
  },
  {
   "group": "Our pastors",
@@ -238,7 +265,8 @@ window.HBC_FIELDS = [
   "label": "Pastor 1 photo",
   "type": "image",
   "value": "",
-  "hint": "Optional. Shown above the name once a photo is added."
+  "hint": "Optional. Shown above the name once a photo is added.",
+  "alt": ""
  },
  {
   "group": "Our pastors",
@@ -270,7 +298,8 @@ window.HBC_FIELDS = [
   "label": "Pastor 2 photo",
   "type": "image",
   "value": "",
-  "hint": "Optional. Shown above the name once a photo is added."
+  "hint": "Optional. Shown above the name once a photo is added.",
+  "alt": ""
  },
  {
   "group": "God’s truth about us",
@@ -390,7 +419,8 @@ window.HBC_FIELDS = [
   "label": "Photo of the Bible stands",
   "type": "image",
   "value": "",
-  "hint": "Optional. Fills the background of the Free Bible section once a photo is added."
+  "hint": "Optional. Fills the background of the Free Bible section once a photo is added.",
+  "alt": ""
  },
  {
   "group": "What we believe",
